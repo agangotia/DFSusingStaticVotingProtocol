@@ -1,6 +1,10 @@
 package com.utd.dfs.utils;
-
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
+import java.util.Scanner;
 
 public class ConfigurationFile {
 
@@ -8,6 +12,9 @@ public class ConfigurationFile {
 		int remaining_ops=operations_count;
 		int read_ops= (int) Math.floor(.7*operations_count);
 		int write_ops= (int) Math.ceil(0.3*operations_count);
+		char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
+		StringBuilder sb = new StringBuilder();
+		Random random_string = new Random();//generate random strings for write operations
 		Random file = new Random();//generates the index of file on which an operation has to be performed
 		Random opr_select= new Random();//randomly select a number between 0 and 100. If the number falls between 0 and 90 then perform read else write
 		while(remaining_ops>0){
@@ -19,14 +26,24 @@ public class ConfigurationFile {
 					FileAppend.appendText("config_file", file_name+" R");
 					read_ops=read_ops-1;
 				}
-				else{
-					FileAppend.appendText("config_file", file_name+" w");
+				else{//generate random text to write
+					for (int i = 0; i < 10; i++) {
+						char c = chars[random_string.nextInt(chars.length)];
+						sb.append(c);
+					}
+					FileAppend.appendText("config_file", file_name+" W "+ sb.toString());
+					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
 			}
 			else{
 				if(write_ops>0){
-					FileAppend.appendText("config_file", file_name+" w");
+					for (int i = 0; i < 10; i++) {
+						char c = chars[random_string.nextInt(chars.length)];
+						sb.append(c);
+					}
+					FileAppend.appendText("config_file", file_name+" W "+ sb.toString());
+					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
 				else{
@@ -38,8 +55,43 @@ public class ConfigurationFile {
 		}
 	}
 
+	public void read_configuration(String config_file, Queue<FileMessage> file_queue[]){//maintaining separate queues for individual operations on file
+		File f = new File(config_file);
+		FileMessage message=null;
+		try {
+			@SuppressWarnings("resource")
+			Scanner fread= new Scanner(f);
+			while(fread.hasNextLine()){
+				String line= fread.nextLine();
+				//System.out.println(line);
+				String[] linesplit= line.split(" ");
+				Integer queue_index= Integer.parseInt(linesplit[0].substring(4));
+				if(linesplit.length>2){
+					message=new FileMessage(linesplit[1],linesplit[2]);
+				}
+				else{
+
+					message= new FileMessage(linesplit[1],null);	
+				}
+				file_queue[queue_index].add(message);
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	public static void main(String args[]){
 		ConfigurationFile f= new ConfigurationFile();
 		f.generate_cffile(10, 0, 3);
+		@SuppressWarnings("unchecked")
+		Queue<FileMessage> q[]= new Queue[4];
+		q[0]= new LinkedList<FileMessage>();
+		q[1]=new LinkedList<FileMessage>();
+		q[2]=new LinkedList<FileMessage>();
+		q[3]=new LinkedList<FileMessage>();
+		f.read_configuration("config_file", q);
+		for(int i=0; i<4; i++){
+			System.out.println(q[i].toString());
+		}
 	}
 }
