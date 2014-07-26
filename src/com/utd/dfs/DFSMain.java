@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.logicalclock.LogicalClock;
+import com.utd.dfs.utils.ConnectionManager;
 import com.utd.dfs.utils.NodeDetails;
 
 
@@ -87,6 +88,10 @@ public class DFSMain {
 		DFSMain objMain=new DFSMain();
 
 		if (!objMain.readConfig(Constants.TOPOLOGYFILE, Integer.parseInt(args[0]))) {
+			return;
+		}
+		
+		if(!ConnectionManager.createConnections(objMain.currentNode, objMain.connectionSocket,objMain.mapNodes)){
 			return;
 		}
 
