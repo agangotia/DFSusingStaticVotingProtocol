@@ -68,7 +68,8 @@ public class DFSMain {
 	
 
 	/**
-	 * FileAppend This class writes to files
+	 * This is the main.
+	 * Starting point of execution for our app.
 	 * 
 	 * @author Anupam Gangotia Profile::http://en.gravatar.com/gangotia
 	 *         github::https://github.com/agangotia
