@@ -1,6 +1,10 @@
 package com.utd.dfs;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.nio.sctp.SctpChannel;
@@ -24,6 +28,12 @@ public class DFSMain {
 	 * contains information about current Node read from config.
 	 */
 	private  NodeDetails currentNode;
+	
+	/**
+	 * contains information about coordinator Node read from config.
+	 */
+	private  NodeDetails coordinatorNode;
+	
 	/**
 	 * This is the map of all Nodes Present in the Topology
 	 */
@@ -84,7 +94,74 @@ public class DFSMain {
 	
 	
 	public boolean readConfig(String fileName,int nodeID){
-		return false;
+		System.out.println("Reading config for"+nodeID);
+		BufferedReader bReader = null;
+		int nodesCount=0;
+		try {
+			bReader = new BufferedReader(new FileReader(fileName));
+			String line = bReader.readLine();
+			boolean firstLine=true;
+			while(line!=null){
+				if(firstLine){
+					firstLine=false;
+				}else{
+					StringTokenizer st = new StringTokenizer(line, ",");
+					//1.NODE ID
+					int nodeIDLoop=Integer.parseInt((String) st.nextElement());
+					//2.IP ADDRESS
+					String address=(String)st.nextElement();
+					//3.PORT NO
+					int portNumber=Integer.parseInt((String) st.nextElement());	
+					//4.DELAYFAIL 
+					int delayFail=Integer.parseInt((String) st.nextElement());	
+					//5.MYVOTES 
+					int myVotes=Integer.parseInt((String) st.nextElement());
+					//6.TOTALVOTES
+					int totalVotes=Integer.parseInt((String) st.nextElement());
+					//8.IS_COORDINATOR
+					char isCoordinator=((String) st.nextElement()).charAt(0);
+					
+					NodeDetails nodeObj=new NodeDetails(nodeIDLoop, portNumber, address,delayFail,myVotes,totalVotes,isCoordinator);
+					mapNodes.put(nodeID,nodeObj);
+					mapNodesByAddress.put(address+String.valueOf(portNumber),nodeObj);
+					nodesCount++;
+					
+					if(isCoordinator=='Y')
+						coordinatorNode=nodeObj;
+				}
+				line = bReader.readLine();
+				if(line!=null && line.length()==0)
+					break;
+				}
+			
+			this.totalNodes=nodesCount;
+			//System.out.println("Total Nodes"+totalNodes);
+			//All the Node info has been filled
+			if(mapNodes.containsKey(nodeID))
+				currentNode=mapNodes.get(nodeID);
+			else{
+				
+				System.out.println("*********************************************************");
+				System.out.println("Please Supply the correct Process ID"+nodeID);
+				System.out.println("*********************************************************");
+				System.out.println("Exiting");
+				return false;
+			}
+			}catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("*********************************************************");
+			System.out.println("Exception in reading config"+e.toString());
+			return false;
+		} finally {
+			try {
+				if (bReader != null)
+					bReader.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+
+		}
+		return true;
 	}
 
 }

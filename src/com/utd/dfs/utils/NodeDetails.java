@@ -16,18 +16,19 @@ public class NodeDetails {
 	private int delay_fail;
 	private int my_votes;
 	private int total_votes;
-	private int operations_count;
-	private String coordinator_address;
+	private char isCoordinator;
 	
-	NodeDetails(int nodeId,int portNumber,String address,int delay_fail, int my_votes, int total_votes, int operations_count, String coordinator_address){
+	
+
+
+	public NodeDetails(int nodeId,int portNumber,String address,int delay_fail, int my_votes, int total_votes, char coordinator_address){
 		this.nodeID=nodeId;
 		this.portNumber=portNumber;
 		this.address=address;
 		this.delay_fail=delay_fail;
 		this.my_votes=my_votes;
 		this.total_votes=total_votes;
-		this.operations_count=operations_count;
-		this.coordinator_address=coordinator_address;
+		this.isCoordinator=coordinator_address;
 	}
 	
 	
@@ -70,22 +71,19 @@ public class NodeDetails {
 	public void setTotal_votes(int total_votes) {
 		this.total_votes = total_votes;
 	}
-	public int getOperations_count() {
-		return operations_count;
-	}
-	public void setOperations_count(int operations_count) {
-		this.operations_count = operations_count;
-	}
-	public String getCoordinator_address() {
-		return coordinator_address;
-	}
-	public void setCoordinator_address(String coordinator_address) {
-		this.coordinator_address = coordinator_address;
-	}
+	
+	
 	public void setPortNumber(int portNumber) {
 		this.portNumber = portNumber;
 	}
-	
+	public char getIsCoordinator() {
+		return isCoordinator;
+	}
+
+
+	public void setIsCoordinator(char isCoordinator) {
+		this.isCoordinator = isCoordinator;
+	}
 	
 	/**
 	 * @param args
