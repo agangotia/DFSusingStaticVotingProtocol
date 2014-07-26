@@ -88,10 +88,18 @@ public class DFSMain {
 		DFSMain objMain=new DFSMain();
 
 		if (!objMain.readConfig(Constants.TOPOLOGYFILE, Integer.parseInt(args[0]))) {
+			System.out
+			.println("Error in reading file "+Constants.TOPOLOGYFILE);
+			System.out
+			.println("Exit");
 			return;
 		}
 		
 		if(!ConnectionManager.createConnections(objMain.currentNode, objMain.connectionSocket,objMain.mapNodes)){
+			System.out
+			.println("Error in creating connections");
+			System.out
+			.println("Exit");
 			return;
 		}
 

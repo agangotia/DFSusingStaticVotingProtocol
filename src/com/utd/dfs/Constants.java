@@ -2,6 +2,6 @@ package com.utd.dfs;
 
 public interface Constants {
 
-	String TOPOLOGYFILE="data/topology.txt";
+	String TOPOLOGYFILE="data//topology.txt";
 	
 }
