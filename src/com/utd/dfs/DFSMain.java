@@ -5,8 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.logicalclock.LogicalClock;
@@ -28,30 +30,30 @@ public class DFSMain {
 	/**
 	 * This is the total number of nodes in topology read from config.
 	 */
-	private int totalNodes;
+	public static int totalNodes=0;
 	/**
 	 * contains information about current Node read from config.
 	 */
-	private  NodeDetails currentNode;
+	public static  NodeDetails currentNode;
 	
 	/**
 	 * contains information about coordinator Node read from config.
 	 */
-	private  NodeDetails coordinatorNode;
+	public static  NodeDetails coordinatorNode;
 	
 	/**
 	 * This is the map of all Nodes Present in the Topology
 	 */
-	private  HashMap<Integer, NodeDetails> mapNodes;
+	public static  HashMap<Integer, NodeDetails> mapNodes=new HashMap<Integer, NodeDetails>();
 	/**
 	 * This is the map of all Nodes Present in the Topology
 	 */
-	 private HashMap<String, NodeDetails> mapNodesByAddress;
+	public static HashMap<String, NodeDetails> mapNodesByAddress=new HashMap<String, NodeDetails>();
 	
 	/**
 	 * This is the map of SCTP Connections.Each Process will contain the connection objects
 	 */
-	public static ConcurrentHashMap<Integer, SctpChannel> connectionSocket;
+	public static ConcurrentHashMap<Integer, SctpChannel> connectionSocket=new ConcurrentHashMap<Integer, SctpChannel>();
 	
 	/**
 	 * Lamport's logical clock
@@ -59,27 +61,19 @@ public class DFSMain {
 	 * On send event : +1
 	 * On recieve event : Max(currentval,valFromMessage)+1
 	 */
-	private LogicalClock LC;//Lamport's Logical Clock
+	public static LogicalClock LC;//Lamport's Logical Clock
 
 	/**
 	 * Queue containing messages to be send
 	 * Used By Send Thread, and Broad Cast Service
 	 */
-	public static BlockingQueue<Message> sendQueue;
+	public static BlockingQueue<Message> sendQueue=new ArrayBlockingQueue<Message>(Constants.SIZESENDQ, true);
 	
 	/**
 	 * Queue containing messages received
 	 * Used By Receive Thread, and Broad Cast Service
 	 */
-	public static BlockingQueue<Message> recvQueue;
-	
-	
-	public DFSMain(){
-		totalNodes=0;//read from topology.txt later
-		mapNodes=new HashMap<Integer, NodeDetails>();
-		mapNodesByAddress=new HashMap<String, NodeDetails>();
-		connectionSocket=new ConcurrentHashMap<Integer, SctpChannel>();
-	}
+	public static BlockingQueue<Message> recvQueue=new ArrayBlockingQueue<Message>(Constants.SIZESRECVQ, true);;
 	
 
 	/**
@@ -101,9 +95,9 @@ public class DFSMain {
 			return;
 		}
 		
-		DFSMain objMain=new DFSMain();
+		
 
-		if (!objMain.readConfig(Constants.TOPOLOGYFILE, Integer.parseInt(args[0]))) {
+		if (!readConfig(Constants.TOPOLOGYFILE, Integer.parseInt(args[0]))) {
 			System.out
 			.println("Error in reading file "+Constants.TOPOLOGYFILE);
 			System.out
@@ -111,7 +105,7 @@ public class DFSMain {
 			return;
 		}
 		
-		if(!ConnectionManager.createConnections(objMain.currentNode, objMain.connectionSocket,objMain.mapNodes)){
+		if(!ConnectionManager.createConnections(currentNode, connectionSocket,mapNodes)){
 			System.out
 			.println("Error in creating connections");
 			System.out
@@ -133,8 +127,10 @@ public class DFSMain {
 			return;
 		}
 		
-		if(Constants.TESTSENDERRECEIVER){
-			
+		System.out.println("check"+currentNode.getNodeID());
+		
+		if(Constants.TESTSENDERRECEIVER && currentNode.getNodeID()==2){
+			testSenderReceiver();
 		}
 		
 	
@@ -151,7 +147,7 @@ public class DFSMain {
 	}
 	
 	
-	public boolean readConfig(String fileName,int nodeID){
+	public static boolean readConfig(String fileName,int nodeID){
 		System.out.println("Reading config for"+nodeID);
 		BufferedReader bReader = null;
 		int nodesCount=0;
@@ -180,7 +176,7 @@ public class DFSMain {
 					char isCoordinator=((String) st.nextElement()).charAt(0);
 					
 					NodeDetails nodeObj=new NodeDetails(nodeIDLoop, portNumber, address,delayFail,myVotes,totalVotes,isCoordinator);
-					mapNodes.put(nodeID,nodeObj);
+					mapNodes.put(nodeIDLoop,nodeObj);
 					mapNodesByAddress.put(address+String.valueOf(portNumber),nodeObj);
 					nodesCount++;
 					
@@ -192,7 +188,7 @@ public class DFSMain {
 					break;
 				}
 			
-			this.totalNodes=nodesCount;
+			totalNodes=nodesCount;
 			//System.out.println("Total Nodes"+totalNodes);
 			//All the Node info has been filled
 			if(mapNodes.containsKey(nodeID))
@@ -226,8 +222,9 @@ public class DFSMain {
 	 * This method checks the Sender & receiver thread by sending a dummy message
 	 */
 	public static void testSenderReceiver(){
-		Message TestMessage=new Message("1", 1, 2, 30, "Hello");
+		Message TestMessage=new Message("1", 2, 1, 30, "Hello");
 		sendQueue.add(TestMessage);
+		DFSMain.applicationRunning=false;
 	}
 
 }

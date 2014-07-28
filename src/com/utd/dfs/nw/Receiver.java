@@ -39,7 +39,8 @@ public class Receiver implements Runnable {
         	           
         	            msgPrint+="\n*********************************************";
                         System.out.println(msgPrint);
-                        
+                        //for check
+                        DFSMain.applicationRunning=false;
 
                     byteBuffer.clear();
                 }
