@@ -55,13 +55,6 @@ public class DFSMain {
 	 */
 	public static ConcurrentHashMap<Integer, SctpChannel> connectionSocket=new ConcurrentHashMap<Integer, SctpChannel>();
 	
-	/**
-	 * Lamport's logical clock
-	 * initial value=0
-	 * On send event : +1
-	 * On recieve event : Max(currentval,valFromMessage)+1
-	 */
-	public static LogicalClock LC;//Lamport's Logical Clock
 
 	/**
 	 * Queue containing messages to be send
@@ -194,7 +187,7 @@ public class DFSMain {
 				}
 			
 			totalNodes=nodesCount;
-			//System.out.println("Total Nodes"+totalNodes);
+			
 			//All the Node info has been filled
 			if(mapNodes.containsKey(nodeID))
 				currentNode=mapNodes.get(nodeID);

@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
 import com.sun.nio.sctp.SctpChannel;
+import com.utd.dfs.Constants;
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.msg.Message;
 import com.utd.dfs.utils.ConnectionManager;
@@ -39,8 +40,9 @@ public class Receiver implements Runnable {
         	           
         	            msgPrint+="\n*********************************************";
                         System.out.println(msgPrint);
-                        //for check
-                        DFSMain.applicationRunning=false;
+                        
+                        if(Constants.TESTSENDERRECEIVER==true && receivedMsg.getMsgType()==30)//for check
+                        	DFSMain.applicationRunning=false;
 
                     byteBuffer.clear();
                 }
