@@ -5,10 +5,12 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.logicalclock.LogicalClock;
+import com.utd.dfs.msg.Message;
 import com.utd.dfs.utils.ConnectionManager;
 import com.utd.dfs.utils.NodeDetails;
 
@@ -19,7 +21,7 @@ public class DFSMain {
 	 * applicationRunning=true, Server will listen for requests
 	 * applicationRunning=false, normally happens when u quit the application
 	 */
-	private boolean applicationRunning;
+	public static boolean applicationRunning=true;
 	
 	/**
 	 * This is the total number of nodes in topology read from config.
@@ -47,7 +49,7 @@ public class DFSMain {
 	/**
 	 * This is the map of SCTP Connections.Each Process will contain the connection objects
 	 */
-	private ConcurrentHashMap<Integer, SctpChannel> connectionSocket;
+	public static ConcurrentHashMap<Integer, SctpChannel> connectionSocket;
 	
 	/**
 	 * Lamport's logical clock
@@ -57,9 +59,20 @@ public class DFSMain {
 	 */
 	private LogicalClock LC;//Lamport's Logical Clock
 
+	/**
+	 * Queue containing messages to be send
+	 * Used By Send Thread, and Broad Cast Service
+	 */
+	public static BlockingQueue<Message> sendQueue;
+	
+	/**
+	 * Queue containing messages received
+	 * Used By Receive Thread, and Broad Cast Service
+	 */
+	public static BlockingQueue<Message> recvQueue;
+	
 	
 	public DFSMain(){
-		applicationRunning=true;
 		totalNodes=0;//read from topology.txt later
 		mapNodes=new HashMap<Integer, NodeDetails>();
 		mapNodesByAddress=new HashMap<String, NodeDetails>();

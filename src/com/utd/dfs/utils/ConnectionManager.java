@@ -1,12 +1,19 @@
 package com.utd.dfs.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.charset.CharacterCodingException;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.sun.nio.sctp.MessageInfo;
 import com.sun.nio.sctp.SctpChannel;
 import com.sun.nio.sctp.SctpServerChannel;
+import com.utd.dfs.DFSMain;
+import com.utd.dfs.msg.Message;
 
 /**
  * Connection Manager
@@ -112,6 +119,67 @@ public class ConnectionManager {
     }
 	
 	
+	public static void  sendMessage(Message msgToSend) {
+		 //get the connection object from already stored connections in the map
+	        SctpChannel clientSocket = DFSMain.connectionSocket.get(msgToSend.getRecipientNodeID());
+	        if(clientSocket==null){
+	        	System.out.println("Connection Manager can't get the SCTP Channel object for Recipeint Node Id "+msgToSend.getRecipientNodeID()+" in theconnection Map.");
+	        	return;
+	        }
+	        
+	        try {
+	        	
+	        	sendMessageSCTP(clientSocket, msgToSend);
+
+	        } catch (CharacterCodingException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+	        catch (IOException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+
+	    }
+
+	    private static void sendMessageSCTP(SctpChannel clientSock, Message message)
+	            throws CharacterCodingException,IOException {
+
+	        ByteBuffer Buffer = ByteBuffer.allocate(10000);
+	        Buffer.clear();
+	        byte[] serialized = null;
+	        serialized = serialize(message);
+	    
+
+	        // Reset a pointer to point to the start of buffer
+	        Buffer.put(serialized);
+	        Buffer.flip();
+
+	        try {
+	            // Send a message in the channel
+	            MessageInfo messageInfo = MessageInfo.createOutgoing(null, 0);
+	            clientSock.send(Buffer, messageInfo);
+	            String msgPrint="*********************************************";
+	            msgPrint+="\nSending Time-"+System.currentTimeMillis()+"\n"
+		                +message.printMessage();
+	            msgPrint+="\n*********************************************";
+	            System.out.println(msgPrint);
+	       
+	            
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        } catch (NullPointerException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    public static byte[] serialize(Object obj) throws IOException {
+	        ObjectOutputStream out;
+	        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+	        out = new ObjectOutputStream(bos);
+	        out.writeObject(obj);
+	        return bos.toByteArray();
+	    }
 
 	
 }

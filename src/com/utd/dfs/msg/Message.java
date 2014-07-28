@@ -101,4 +101,12 @@ public class Message implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+	
+	public String printMessage(){
+		return "MID-"+this.messageId +
+				"\nType-"+this.msgType+
+				"\nSender-"+this.senderNodeID+
+				"\nReciever-"+this.recipientNodeID+
+				"\nContent-"+this.data;
+	}
 }
