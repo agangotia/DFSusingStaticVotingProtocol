@@ -11,6 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.logicalclock.LogicalClock;
 import com.utd.dfs.msg.Message;
+import com.utd.dfs.nw.Receiver;
+import com.utd.dfs.nw.Sender;
 import com.utd.dfs.utils.ConnectionManager;
 import com.utd.dfs.utils.NodeDetails;
 
@@ -116,6 +118,35 @@ public class DFSMain {
 			.println("Exit");
 			return;
 		}
+		
+		//Start the Threads objects
+		Thread recvThread;//T2 RECEIVE THREAD
+		Thread sendThread;//T1 SEND THREAD
+		try {
+			sendThread = new Thread(new Sender(),"T1");
+			sendThread.start();
+			recvThread = new Thread(new Receiver(),"T2");
+			recvThread.start();
+		} catch (IllegalThreadStateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return;
+		}
+		
+		if(Constants.TESTSENDERRECEIVER){
+			
+		}
+		
+	
+		//wait for all threads to finish
+		try {
+			if(sendThread!=null)
+				sendThread.join();
+			if(sendThread!=null)
+				sendThread.join();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 	}
 	
@@ -189,6 +220,14 @@ public class DFSMain {
 
 		}
 		return true;
+	}
+	
+	/**
+	 * This method checks the Sender & receiver thread by sending a dummy message
+	 */
+	public static void testSenderReceiver(){
+		Message TestMessage=new Message("1", 1, 2, 30, "Hello");
+		sendQueue.add(TestMessage);
 	}
 
 }

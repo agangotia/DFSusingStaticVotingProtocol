@@ -15,6 +15,8 @@ import java.io.Serializable;
  *  Type 11 :Write Reply Yes
  *  Type 12 :Write Reply No
  *  
+ *  Type 30 :Test Message
+ *  
  * @author Anupam Gangotia
  * Profile::http://en.gravatar.com/gangotia
  * github::https://github.com/agangotia
@@ -35,21 +37,21 @@ public class Message implements Serializable {
 	
 	private String data;
 	
-	private int logicalClockValue;
+	
 	
 	public Message(){
 		
 	}
 	
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
-			int msgType, String data, int logicalClockValue) {
+			int msgType, String data) {
 		super();
 		this.messageId = messageId;
 		this.senderNodeID = senderNodeID;
 		this.recipientNodeID = recipientNodeID;
 		this.msgType = msgType;
 		this.data = data;
-		this.logicalClockValue = logicalClockValue;
+		//this.logicalClockValue = logicalClockValue;
 	}
 
 	public String getMessageId() {
@@ -92,13 +94,6 @@ public class Message implements Serializable {
 		this.data = data;
 	}
 
-	public int getLogicalClockValue() {
-		return logicalClockValue;
-	}
-
-	public void setLogicalClockValue(int logicalClockValue) {
-		this.logicalClockValue = logicalClockValue;
-	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
