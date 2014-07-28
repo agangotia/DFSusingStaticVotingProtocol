@@ -97,7 +97,7 @@ public class DFSMain {
 		
 		
 
-		if (!readConfig(Constants.TOPOLOGYFILE, Integer.parseInt(args[0]))) {
+		if (!readTopology(Constants.TOPOLOGYFILE, Integer.parseInt(args[0]))) {
 			System.out
 			.println("Error in reading file "+Constants.TOPOLOGYFILE);
 			System.out
@@ -127,8 +127,8 @@ public class DFSMain {
 			return;
 		}
 		
-		System.out.println("check"+currentNode.getNodeID());
 		
+		//Just a Test
 		if(Constants.TESTSENDERRECEIVER && currentNode.getNodeID()==2){
 			testSenderReceiver();
 		}
@@ -147,7 +147,12 @@ public class DFSMain {
 	}
 	
 	
-	public static boolean readConfig(String fileName,int nodeID){
+	/**
+	 * readTopology()
+	 * reads the topology files.
+	 * and fills the required datastructures.
+	 */
+	public static boolean readTopology(String fileName,int nodeID){
 		System.out.println("Reading config for"+nodeID);
 		BufferedReader bReader = null;
 		int nodesCount=0;
