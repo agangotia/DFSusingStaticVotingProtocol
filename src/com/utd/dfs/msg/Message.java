@@ -8,6 +8,8 @@ import java.io.Serializable;
  * 	Type 0 : Read Broadcast Request
  *  Type 1 : Read Reply Yes
  *  Type 2 : Read Reply No
+ *  Type 3 : Read "Send Latest" Request
+ *  Type 4 : Read "Latest" Reply
  *  
  *  Type 10 :Write Broadcast Request
  *  Type 11 :Write Reply Yes
