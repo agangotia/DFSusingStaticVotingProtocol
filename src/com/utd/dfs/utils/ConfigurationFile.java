@@ -1,6 +1,7 @@
 package com.utd.dfs.utils;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
@@ -23,7 +24,7 @@ public class ConfigurationFile {
 			int opr_index=opr_select.nextInt();
 			if(opr_index<70){//perform read operation
 				if(read_ops>0){//check if read operations left is greater than 0 perform read else do write
-					FileAppend.appendText("config_file", file_name+" R");
+					FileFeatures.appendText("config_file", file_name+" R");
 					read_ops=read_ops-1;
 				}
 				else{//generate random text to write
@@ -31,7 +32,7 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					FileAppend.appendText("config_file", file_name+" W "+ sb.toString());
+					FileFeatures.appendText("config_file", file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
@@ -42,12 +43,12 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					FileAppend.appendText("config_file", file_name+" W "+ sb.toString());
+					FileFeatures.appendText("config_file", file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
 				else{
-					FileAppend.appendText("config_file", file_name+" R");
+					FileFeatures.appendText("config_file", file_name+" R");
 					read_ops=read_ops-1;
 				}
 			}
@@ -67,11 +68,11 @@ public class ConfigurationFile {
 				String[] linesplit= line.split(" ");
 				Integer queue_index= Integer.parseInt(linesplit[0].substring(4));
 				if(linesplit.length>2){
-					message=new FileMessage(linesplit[1],linesplit[2]);
+					message=new FileMessage(linesplit[0],linesplit[1],linesplit[2]);
 				}
 				else{
 
-					message= new FileMessage(linesplit[1],null);	
+					message= new FileMessage(linesplit[0],linesplit[1],null);	
 				}
 				file_queue[queue_index].add(message);
 			}
@@ -83,7 +84,7 @@ public class ConfigurationFile {
 	public static void main(String args[]){
 		ConfigurationFile f= new ConfigurationFile();
 		f.generate_cffile(10, 0, 3);
-		@SuppressWarnings("unchecked")
+		/*@SuppressWarnings("unchecked")
 		Queue<FileMessage> q[]= new Queue[4];
 		q[0]= new LinkedList<FileMessage>();
 		q[1]=new LinkedList<FileMessage>();
@@ -92,6 +93,13 @@ public class ConfigurationFile {
 		f.read_configuration("config_file", q);
 		for(int i=0; i<4; i++){
 			System.out.println(q[i].toString());
+		}*/
+		try {
+			FileFeatures.copyFile("config_file", "data\\config_bkup");
+			FileFeatures.rename("data\\config_bkup", "data\\config_backup");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

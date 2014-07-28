@@ -3,7 +3,13 @@ package com.utd.dfs.utils;
 public class FileMessage {
 	String operation;//read or write
 	String content=null;
-	public FileMessage(String operation, String content) {
+	String file=null;
+	public FileMessage(String file, String operation, String content) {
+		this.operation=operation;
+		this.content=content;
+		this.file=file;
+	}
+		public FileMessage(String operation, String content) {
 		this.operation=operation;
 		this.content=content;
 	}
