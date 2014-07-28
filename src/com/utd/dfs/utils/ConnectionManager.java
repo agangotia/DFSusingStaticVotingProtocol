@@ -118,7 +118,12 @@ public class ConnectionManager {
         return true;
     }
 	
-	
+	/**
+	 * Function sendMessage
+	 * Send Function, use it to unicast.
+	 * Internally calls sendSCTP,
+	 * which is the actual SCTP send.
+	 */
 	public static void  sendMessage(Message msgToSend) {
 		 //get the connection object from already stored connections in the map
 	        SctpChannel clientSocket = DFSMain.connectionSocket.get(msgToSend.getRecipientNodeID());
@@ -142,6 +147,11 @@ public class ConnectionManager {
 
 	    }
 
+	/**
+	 * Function sendMessageSCTP
+	 * Actual SCTP send
+	 */
+	
 	    private static void sendMessageSCTP(SctpChannel clientSock, Message message)
 	            throws CharacterCodingException,IOException {
 
