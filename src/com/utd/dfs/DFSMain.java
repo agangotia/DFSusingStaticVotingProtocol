@@ -75,6 +75,11 @@ public class DFSMain {
 	 */
 	public static FileSystem fs=new FileSystem();
 	
+	/**
+	 * Quorum Sizes
+	 */
+	public static  int readQuorumSize;
+	public static  int writeQuorumSize;
 	
 	/**
 	 * This is the main.
@@ -104,6 +109,10 @@ public class DFSMain {
 			.println("Exit");
 			return;
 		}
+		
+		
+		writeQuorumSize=(totalNodes/2)+1;
+		readQuorumSize=totalNodes-writeQuorumSize;
 		
 		if(!ConnectionManager.createConnections(currentNode, connectionSocket,mapNodes)){
 			System.out

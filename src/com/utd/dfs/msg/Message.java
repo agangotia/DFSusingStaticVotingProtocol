@@ -38,7 +38,10 @@ public class Message implements Serializable {
 	
 	private String data;
 	
+	private String fileName;
 	
+
+	private int fileVersion;
 	
 	public Message(){
 		
@@ -106,5 +109,21 @@ public class Message implements Serializable {
 				"\nSender-"+this.senderNodeID+
 				"\nReciever-"+this.recipientNodeID+
 				"\nContent-"+this.data;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public int getFileVersion() {
+		return fileVersion;
+	}
+
+	public void setFileVersion(int fileVersion) {
+		this.fileVersion = fileVersion;
 	}
 }
