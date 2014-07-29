@@ -35,6 +35,7 @@ public class FileOperationsCount {
 	 */
 	public int incrementVersion(){
 		this.version=this.version+1;
+		DFSMain.myFileVersions.put(file_name, this.version);
 		return this.version;
 	}
 	public int getVersion(){
@@ -43,23 +44,8 @@ public class FileOperationsCount {
 	public void setFile_name(String file_name) {
 		this.file_name = file_name;
 	}
-	/**
-	 * returns filename without version number
-	 * @return
-	 */
-	public String getFileWithoutVersion(){
-		String[] split_version=file_name.split("-");
-		return split_version[0];
-	}
-	/**
-	 * returns version number for the file in current file system
-	 * @return
-	 */
-	public int myFileVersion() {
-		String[] split_version= file_name.split("_");
-		this.version= Integer.parseInt(split_version[1].substring(1));
-		return this.version;
-	}
+
+	
 	/**
 	 * add the given votes to the votes_acquired so far
 	 * @param votes
