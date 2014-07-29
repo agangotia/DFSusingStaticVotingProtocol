@@ -11,6 +11,7 @@ import com.utd.dfs.utils.NodeDetails;
 
 public class FileSystem {
 	 Map<String,File> fsobject=new HashMap<String,File>();
+	 public static HashMap<String,Integer> myFileVersions=new HashMap<String,Integer>();
 	/**
 	 * Set determines the status of the files that are currently locked 
 	 * @param fname

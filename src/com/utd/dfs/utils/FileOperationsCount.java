@@ -1,7 +1,9 @@
 package com.utd.dfs.utils;
 
 import java.util.TreeMap;
+
 import com.utd.dfs.*;
+import com.utd.dfs.fs.FileSystem;
 
 public class FileOperationsCount {
 	private String file_name;
@@ -35,7 +37,7 @@ public class FileOperationsCount {
 	 */
 	public int incrementVersion(){
 		this.version=this.version+1;
-		DFSMain.myFileVersions.put(file_name, this.version);
+		FileSystem.myFileVersions.put(file_name, this.version);
 		return this.version;
 	}
 	public int getVersion(){

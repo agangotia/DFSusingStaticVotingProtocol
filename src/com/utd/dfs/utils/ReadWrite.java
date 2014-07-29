@@ -13,15 +13,15 @@ public class ReadWrite extends Thread{
 	}
 	
 	public void run(){
-		if(mess.operation.equals("R")){
-			if(fs.getStatus(mess.file)){
-				fs.lock(mess.file, "R");
+		if(mess.operation.equals("R")){//read operation
+			if(fs.getStatus(mess.file)){// check for lock
+				fs.lock(mess.file, "R");// if not lock acquire lock
 				//call the broadcast class
-				foc.setTimeStarted(System.currentTimeMillis());
+				foc.setTimeStarted(System.currentTimeMillis());// set the tiem out for broadcast
 				synchronized(foc){
 					try {
 						foc.wait();
-						if(foc.checkMajority()){
+						if(foc.checkMajority()){//once has the majority
 							
 						}
 					} catch (InterruptedException e) {
