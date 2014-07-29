@@ -10,6 +10,7 @@ import java.io.Serializable;
  *  Type 2 : Read Reply No
  *  Type 3 : Read "Send Latest" Request
  *  Type 4 : Read "Latest" Reply
+ *  Type 5 : Read Release Read Lock
  *  
  *  Type 10 :Write Broadcast Request
  *  Type 11 :Write Reply Yes
@@ -26,6 +27,8 @@ public class Message implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
+
+
 	private String messageId;
 	
 
@@ -37,10 +40,23 @@ public class Message implements Serializable {
 	
 	private String data;
 	
+	private String fileName;
 	
+
+	private int fileVersion;
 	
 	public Message(){
 		
+	}
+	public Message(String messageId, int senderNodeID, int recipientNodeID,
+			int msgType, String data, String fileName) {
+		super();
+		this.messageId = messageId;
+		this.senderNodeID = senderNodeID;
+		this.recipientNodeID = recipientNodeID;
+		this.msgType = msgType;
+		this.data = data;
+		this.fileName = fileName;
 	}
 	
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
@@ -105,5 +121,21 @@ public class Message implements Serializable {
 				"\nSender-"+this.senderNodeID+
 				"\nReciever-"+this.recipientNodeID+
 				"\nContent-"+this.data;
+	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public int getFileVersion() {
+		return fileVersion;
+	}
+
+	public void setFileVersion(int fileVersion) {
+		this.fileVersion = fileVersion;
 	}
 }

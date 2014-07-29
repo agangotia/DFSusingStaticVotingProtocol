@@ -28,10 +28,14 @@ public class ProessFileQueues {
 					FileMessage message=q[i].peek();
 					if(!FileSystem.map_filestatus.containsKey(message.file)) {
 	//					rw.proceess_input(message);
+						FileSystem.map_filestatus.put(message.file, "Pending");
+						Thread readWrite=new Thread(new ReadWrite(message, foc[i]),"RW"+i);
+						readWrite.start();
 					}
 					if(FileSystem.map_filestatus.get(message.file).equals("complete")){
 						q[i].poll();
 						message=q[i].peek();
+						FileSystem.map_filestatus.remove(message.file);
 					//	rw.proceess_input(message);
 					}
 				}

@@ -9,8 +9,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 
-
 import com.sun.nio.sctp.SctpChannel;
+import com.utd.dfs.fs.FileSystem;
 import com.utd.dfs.logicalclock.LogicalClock;
 import com.utd.dfs.msg.Message;
 import com.utd.dfs.nw.Receiver;
@@ -73,6 +73,18 @@ public class DFSMain {
 	public static BlockingQueue<Message> recvQueue=new ArrayBlockingQueue<Message>(Constants.SIZESRECVQ, true);;
 	
 
+	
+	/**
+	 * File system onject
+	 */
+	public static FileSystem fs=new FileSystem();
+	
+	/**
+	 * Quorum Sizes
+	 */
+	public static  int readQuorumSize;
+	public static  int writeQuorumSize;
+	
 	/**
 	 * This is the main.
 	 * Starting point of execution for our app.
@@ -101,6 +113,10 @@ public class DFSMain {
 			.println("Exit");
 			return;
 		}
+		
+		
+		writeQuorumSize=(totalNodes/2)+1;
+		readQuorumSize=totalNodes-writeQuorumSize;
 		
 		if(!ConnectionManager.createConnections(currentNode, connectionSocket,mapNodes)){
 			System.out
