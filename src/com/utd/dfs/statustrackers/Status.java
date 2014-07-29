@@ -16,10 +16,21 @@ import com.utd.dfs.msg.Message;
  */
 public  abstract class Status {
 
-	private String fileName;
-	private HashMap<Integer,Message> repliesBucket;
-	private int expectedReplies;
+	private String fileName;//This is the FileName for which we are maintaining the datastructure
+	private HashMap<Integer,Message> repliesBucket;// replies received
+	private int expectedReplies;//Total nodes, usually u will exPECT  replies from all
+	/**
+	 * waitStart used for time out.
+	 * Receiver Thread , checks for status objects 
+	 * that have timeout, and calls notify explicitly upon them.
+	 */
 	private long waitStart;
+	/**
+	 * THis is the synchronized wait notify object.
+	 * ReadWrite thread, calls wait on this object,
+	 * My Status object.addReply() calls notify again on o object,
+	 * To indicate read write thread to wait no more,
+	 */
 	private Object o;
 	
 	
