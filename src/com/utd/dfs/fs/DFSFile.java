@@ -12,6 +12,7 @@ public class DFSFile {
 	private int file_version;
 	private String data;
 	public ReentrantReadWriteLock rwl;
+	public int readLockCount;//only unlock readlock when this is 0.
 	
 	public DFSFile(String fname, int file_version, String data) {
 		super();
@@ -31,7 +32,7 @@ public class DFSFile {
 	 /** Backsup original copy so that the file can be rolledback in case of failure
 	 * @param file_details
 	 */
-	public void backup_original(){
+	public synchronized void backup_original(){
 		try {
 			FileFeatures.copyFile(fname,"data\\"+fname+"_bk");
 		} catch (IOException e) {
@@ -43,18 +44,18 @@ public class DFSFile {
 	 * @param file_details
 	 * @param data
 	 */
-	public void append(String data){
+	public synchronized void append(String data){
 	//	rwl.writeLock().lock();
 		this.data+=data;
 		FileFeatures.appendText(fname, data);
 	}
-	public String read(){
+	public synchronized String read(){
 	//	rwl.readLock().lock();
 		//just read the local copy
 		rwl.readLock().unlock();
 		return this.data;
 	}
-	public void releaseWrite(int status){
+	public synchronized void releaseWrite(int status){
 		if(status==1){//indicates that operation is a success
 			rwl.writeLock().unlock();
 		}
@@ -66,7 +67,9 @@ public class DFSFile {
 			}
 		}
 	}
-	public void relaseRead(){
-		rwl.readLock().unlock();
+	public synchronized void relaseRead(){
+		readLockCount--;
+		if(readLockCount==0)
+			rwl.readLock().unlock();
 	}
 }
