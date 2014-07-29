@@ -40,6 +40,10 @@ public class DFSMain {
 	 * contains information about coordinator Node read from config.
 	 */
 	public static  NodeDetails coordinatorNode;
+	/**
+	 * map to maintain file versions of current node
+	 */
+	public static HashMap<String,Integer> myFileVersions=new HashMap<String,Integer>();
 	
 	/**
 	 * This is the map of all Nodes Present in the Topology
