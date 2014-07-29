@@ -1,10 +1,10 @@
 package com.utd.dfs.utils;
 
+import com.utd.dfs.DFSMain;
 import com.utd.dfs.fs.FileSystem;
 
 public class ReadWrite extends Thread{
 	FileMessage mess;
-	FileSystem fs= new FileSystem();
 	FileOperationsCount foc;
 	public ReadWrite(FileMessage mess, FileOperationsCount foc) {
 		super();
@@ -14,28 +14,82 @@ public class ReadWrite extends Thread{
 	
 	public void run(){
 		if(mess.operation.equals("R")){//read operation
-			if(fs.getStatus(mess.file)){// check for lock
-				fs.lock(mess.file, "R");// if not lock acquire lock
+			if(DFSMain.fs.getStatus(mess.file)){// check for lock
+				DFSMain.fs.lock(mess.file, "R");// if not lock acquire lock
 				//call the broadcast class
+				//Type 0 read broadcast request
 				foc.setTimeStarted(System.currentTimeMillis());// set the tiem out for broadcast
 				synchronized(foc){
 					try {
 						foc.wait();
 						if(foc.checkMajority()){//once has the majority
-							
+							DFSMain.fs.checkout(foc);
+							//Do the Broadcast for Read Lock Release to quorum
+							//Type 5 read broadcast lock release
+							DFSMain.fs.read(foc.getFile_name());
+							FileSystem.map_filestatus.put(mess.file, "Complete");
+						}else{
+							FileSystem.map_filestatus.remove(mess.file);
+							return;
 						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
+						FileSystem.map_filestatus.remove(mess.file);
+						return;
 					}
 				}
 			}
 			else{
 				System.out.println("file is locked. Unable to do the read operation "+mess.file);
+				FileSystem.map_filestatus.remove(mess.file);
 				return;
 			}
 		
 		}
-		else{
+		else{//Write operation
+			if(DFSMain.fs.getStatus(mess.file)){// check for lock
+				DFSMain.fs.lock(mess.file, "W");// if not lock acquire lock
+				//call the broadcast class
+				//Type 10 write broadcast request
+				foc.setTimeStarted(System.currentTimeMillis());// set the tiem out for broadcast
+				synchronized(foc){
+					try {
+						foc.wait();
+						if(foc.checkMajority()){//once has the majority
+							DFSMain.fs.bup(mess.file);
+							DFSMain.fs.checkout(foc);
+							DFSMain.fs.write(foc.getFile_name(), mess.content);
+							//Pass on to Consistency Manager to publish the changes to Quorum.
+							//Synchronized on map object inside consistency manager and wait
+							//till u notify
+							
+							if(){// all nodes were able to update the changes
+								//Again a Broadcast to release the locks.
+								DFSMain.fs.releaseLock(foc.getFile_name());
+								FileSystem.map_filestatus.put(mess.file, "Complete");	
+								
+							}else{//if one of them fails.
+								FileSystem.map_filestatus.remove(mess.file);
+								//FileFeatures.bup()//
+								
+							}
+							
+							
+							
+						}else{
+							FileSystem.map_filestatus.remove(mess.file);
+							return;
+						}
+					} catch (InterruptedException e) {
+						FileSystem.map_filestatus.remove(mess.file);
+						e.printStackTrace();
+						return;
+					}
+				}
+			}else{
+				FileSystem.map_filestatus.remove(mess.file);
+				return;
+			}
 			
 		}
 	}

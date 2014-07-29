@@ -10,6 +10,7 @@ import java.io.Serializable;
  *  Type 2 : Read Reply No
  *  Type 3 : Read "Send Latest" Request
  *  Type 4 : Read "Latest" Reply
+ *  Type 5 : Read Release Read Lock
  *  
  *  Type 10 :Write Broadcast Request
  *  Type 11 :Write Reply Yes

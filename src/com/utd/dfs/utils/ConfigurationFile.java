@@ -7,6 +7,11 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
 
+
+
+import com.utd.dfs.fs.DFSFile;
+import com.utd.dfs.fs.FileSystem;
+
 public class ConfigurationFile {
 
 	public void generate_cffile(int operations_count,int file_minindex, int file_maxindex){
@@ -69,6 +74,7 @@ public class ConfigurationFile {
 				Integer queue_index= Integer.parseInt(linesplit[0].substring(4));
 				if(linesplit.length>2){
 					message=new FileMessage(linesplit[0],linesplit[1],linesplit[2]);
+					FileSystem.fsobject.put(linesplit[0], new DFSFile(linesplit[0],0,linesplit[2]));
 				}
 				else{
 

@@ -10,9 +10,13 @@ import com.utd.dfs.utils.FileOperationsCount;
 import com.utd.dfs.utils.NodeDetails;
 
 public class FileSystem {
-	 Map<String,File> fsobject=new HashMap<String,File>();
+	 public static Map<String,DFSFile> fsobject=new HashMap<String,DFSFile>();
 	 public static HashMap<String,Integer> myFileVersions=new HashMap<String,Integer>();
-	/**
+	
+
+
+	 
+	 /**
 	 * Set determines the status of the files that are currently locked 
 	 * @param fname
 	 * @return
@@ -27,7 +31,7 @@ public class FileSystem {
 		}
 	}
 	public void lock(String file_name, String lock_type){
-		File file_obj=null;
+		DFSFile file_obj=null;
 		file_obj= fsobject.get(file_name);
 		if(lock_type.equals("R")){
 			file_obj.rwl.readLock().lock();
@@ -43,9 +47,29 @@ public class FileSystem {
 		}
 	
 	}
+	
+	public String read(String file_name){
+		DFSFile file_obj= fsobject.get(file_name);
+		return file_obj.read();
+	}
+	
+	public void write(String file_name,String data){
+		DFSFile file_obj= fsobject.get(file_name);
+		 file_obj.append( data);
+	}
+	
 	public void checkin(){
 	 
 	}
 	
+	public void bup(String file_name){
+		DFSFile file_obj= fsobject.get(file_name);
+		 file_obj.backup_original();
+	}
+	
+	public void releaseLock(String fileName){
+		DFSFile file_obj= fsobject.get(fileName);
+		 file_obj.releaseWrite(1);
+	}
 
 }

@@ -4,15 +4,26 @@ import com.utd.dfs.utils.*;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public class File {
+public class DFSFile {
 
 
 	private String fname;
+	
 	private int file_version;
+	private String data;
+	public ReentrantReadWriteLock rwl;
+	
+	public DFSFile(String fname, int file_version, String data) {
+		super();
+		this.fname = fname;
+		this.file_version = file_version;
+		this.data = data;
+		this.rwl= new ReentrantReadWriteLock();
+	}
 	/**
 	 * this is a readwritelock
 	 */
-	public ReentrantReadWriteLock rwl= new ReentrantReadWriteLock();
+	
 	
 	/**
 	 * sets the fname to the name in FileOperationsCount object
@@ -20,7 +31,7 @@ public class File {
 	 /** Backsup original copy so that the file can be rolledback in case of failure
 	 * @param file_details
 	 */
-	public void backup_original(FileOperationsCount file_details){
+	public void backup_original(){
 		try {
 			FileFeatures.copyFile(fname,"data\\"+fname+"_bk");
 		} catch (IOException e) {
@@ -32,17 +43,16 @@ public class File {
 	 * @param file_details
 	 * @param data
 	 */
-	public void append(FileOperationsCount foc,String data){
+	public void append(String data){
 	//	rwl.writeLock().lock();
-		String fnameNoversion=foc.getFileWithoutVersion();
+		this.data+=data;
 		FileFeatures.appendText(fname, data);
-		file_version=foc.incrementVersion();
-		FileFeatures.rename(fname, fnameNoversion+"_v"+String.valueOf(file_version));
 	}
-	public void read(){
+	public String read(){
 	//	rwl.readLock().lock();
-		//get the content of from latest version using sctp channel......to be completed 
+		//just read the local copy
 		rwl.readLock().unlock();
+		return this.data;
 	}
 	public void releaseWrite(int status){
 		if(status==1){//indicates that operation is a success
