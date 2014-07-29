@@ -27,6 +27,8 @@ public class Message implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
+
+
 	private String messageId;
 	
 
@@ -45,6 +47,16 @@ public class Message implements Serializable {
 	
 	public Message(){
 		
+	}
+	public Message(String messageId, int senderNodeID, int recipientNodeID,
+			int msgType, String data, String fileName) {
+		super();
+		this.messageId = messageId;
+		this.senderNodeID = senderNodeID;
+		this.recipientNodeID = recipientNodeID;
+		this.msgType = msgType;
+		this.data = data;
+		this.fileName = fileName;
 	}
 	
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
