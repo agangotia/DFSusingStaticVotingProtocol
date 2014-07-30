@@ -8,6 +8,8 @@ import java.util.Set;
 
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.statustrackers.Status;
+import com.utd.dfs.statustrackers.StatusGetFile;
+import com.utd.dfs.statustrackers.StatusReadWriteQuorumRequest;
 import com.utd.dfs.utils.FileOperationsCount;
 import com.utd.dfs.utils.NodeDetails;
 
@@ -78,7 +80,25 @@ public class FileSystem {
 	public static void checkout(Status foc){
 		if(DFSMain.currentNode.getNodeID()!=foc.getMaxVersionNodeId()){
 			//get the latest version from node.. call function in consistency manager class
-			DFSCommunicator.unicastGetlatestForRead(foc.getMaxVersionNodeId(), foc.getFileName());
+			int version=foc.getMaxVersionNodeId();
+			
+			Object o=new Object();
+			Status objStatus=new StatusGetFile(foc.getFileName(),o);
+			DFSCommunicator.unicastGetlatestForRead(foc.getMaxVersionNodeId(), foc.getFileName(),objStatus);
+			synchronized(o){
+				try {
+					o.wait();
+					
+					String data=objStatus.getContentOfFile(foc.getMaxVersionNodeId());
+					fsobject.get(foc.getFileName()).setFile_version(version);
+					fsobject.get(foc.getFileName()).setData(data);
+					DFSCommunicator.mapFileStatus.remove(foc.getFileName());
+					
+					}catch(InterruptedException ex){
+						ex.printStackTrace();
+						
+					}
+			}
 		}
 	
 	}
@@ -102,9 +122,14 @@ public class FileSystem {
 		 file_obj.backup_original();
 	}
 	
-	public static void releaseLock(String fileName){
+	public static void releaseWriteLock(String fileName){
 		DFSFile file_obj= fsobject.get(fileName);
 		 file_obj.releaseWrite(1);
 	}
+	public static void releaseReadLock(String fileName){
+		DFSFile file_obj= fsobject.get(fileName);
+		 file_obj.relaseRead();
+	}
+	
 
 }

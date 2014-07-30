@@ -12,6 +12,16 @@ public class DFSFile {
 	private int file_version;
 	
 	private String data;
+	public String getData() {
+		return data;
+	}
+
+
+	public void setData(String data) {
+		this.data = data;
+	}
+
+
 	public ReentrantReadWriteLock rwl;
 	public int readLockCount;//only unlock readlock when this is 0.
 	
@@ -53,7 +63,7 @@ public class DFSFile {
 	public synchronized String read(){
 	//	rwl.readLock().lock();
 		//just read the local copy
-		rwl.readLock().unlock();
+		//rwl.readLock().unlock();
 		return this.data;
 	}
 	public synchronized void releaseWrite(int status){

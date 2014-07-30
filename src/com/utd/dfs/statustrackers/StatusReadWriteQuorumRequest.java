@@ -68,6 +68,17 @@ public class StatusReadWriteQuorumRequest extends Status {
 	}
 	
 	public ArrayList<Integer> nodeIdsRepliedyes(){
-		return new ArrayList<Integer>();
+		ArrayList<Integer> ob=new ArrayList<Integer>();
+		for (Integer id : this.getRepliesBucket().keySet()) {
+		if(Integer.parseInt(this.getRepliesBucket().get(id).getData())>0)
+			ob.add(id);
+	}
+		return ob;
+}
+
+	@Override
+	public String getContentOfFile(int NodeID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

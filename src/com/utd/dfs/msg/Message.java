@@ -6,8 +6,8 @@ import java.io.Serializable;
  * Class Message
  *  Messsage Types:
  * 	Type 0 : Read Broadcast Request
- *  Type 1 : Read Reply Yes
- *  Type 2 : Read Reply No
+ *  Type 1 : Read Reply Yes quorum wieght
+ *  Type 2 : Read Reply No 0
  *  Type 3 : Read "Send Latest" Request
  *  Type 4 : Read "Latest" Reply
  *  Type 5 : Read Release Read Lock
@@ -15,6 +15,8 @@ import java.io.Serializable;
  *  Type 10 :Write Broadcast Request
  *  Type 11 :Write Reply Yes
  *  Type 12 :Write Reply No
+ *  Type 14 : write "updated copy to quorum" Request
+ *  Type 15 : write Release  Lock
  *  
  *  Type 30 :Test Message
  *  

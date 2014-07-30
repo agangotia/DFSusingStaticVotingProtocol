@@ -145,8 +145,8 @@ public class DFSMain {
 		
 		//generate configuration file
 		//get these values from topology file
-		ConfigurationFile.generate_cffile(operations_count, file_minindex, file_maxindex);
-		Queue<FileMessage> file_queue[]= new Queue[file_maxindex-file_minindex];
+		ConfigurationFile.generate_cffile(currentNode.getOpCounts(), Constants.FILEMININDEX, Constants.FILEMAXINDEX);
+		Queue<FileMessage> file_queue[]= new Queue[Constants.FILEMAXINDEX-Constants.FILEMININDEX];
 		ConfigurationFile.read_configuration("config_file", file_queue);
 		//file system is Up
 		FileSystem.buildFileSystem(ConfigurationFile.filesContentsList);
@@ -200,8 +200,10 @@ public class DFSMain {
 					int totalVotes=Integer.parseInt((String) st.nextElement());
 					//8.IS_COORDINATOR
 					char isCoordinator=((String) st.nextElement()).charAt(0);
+					//9.TOTALVOTES
+					int opCount=Integer.parseInt((String) st.nextElement());
 					
-					NodeDetails nodeObj=new NodeDetails(nodeIDLoop, portNumber, address,delayFail,myVotes,totalVotes,isCoordinator);
+					NodeDetails nodeObj=new NodeDetails(nodeIDLoop, portNumber, address,delayFail,myVotes,totalVotes,isCoordinator,opCount);
 					mapNodes.put(nodeIDLoop,nodeObj);
 					mapNodesByAddress.put(address+String.valueOf(portNumber),nodeObj);
 					nodesCount++;

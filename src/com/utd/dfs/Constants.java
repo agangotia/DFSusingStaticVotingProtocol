@@ -7,4 +7,9 @@ public interface Constants {
 	int SIZESENDQ=100;
 	int SIZESRECVQ=100;
 	Long timeOut=20000L;
+	
+	
+	//for File System
+	int FILEMININDEX=0;
+	int FILEMAXINDEX=10;
 }

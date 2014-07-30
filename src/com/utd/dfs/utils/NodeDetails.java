@@ -17,11 +17,22 @@ public class NodeDetails {
 	private int my_votes;
 	private int total_votes;
 	private char isCoordinator;
+	private int opCounts;
 	
 	
 
 
-	public NodeDetails(int nodeId,int portNumber,String address,int delay_fail, int my_votes, int total_votes, char coordinator_address){
+	public int getOpCounts() {
+		return opCounts;
+	}
+
+
+	public void setOpCounts(int opCounts) {
+		this.opCounts = opCounts;
+	}
+
+
+	public NodeDetails(int nodeId,int portNumber,String address,int delay_fail, int my_votes, int total_votes, char coordinator_address,int opCounts){
 		this.nodeID=nodeId;
 		this.portNumber=portNumber;
 		this.address=address;
@@ -29,6 +40,7 @@ public class NodeDetails {
 		this.my_votes=my_votes;
 		this.total_votes=total_votes;
 		this.isCoordinator=coordinator_address;
+		this.opCounts=opCounts;
 	}
 	
 	

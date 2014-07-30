@@ -27,7 +27,7 @@ public  abstract class Status {
 		return repliesBucket;
 	}
 
-	private int expectedReplies;//Total nodes, usually u will exPECT  replies from all
+	public int expectedReplies;//Total nodes, usually u will exPECT  replies from all
 	/**
 	 * waitStart used for time out.
 	 * Receiver Thread , checks for status objects 
@@ -73,4 +73,5 @@ public  abstract class Status {
 	
 	public abstract int getMaxVersionNodeId();
 	public abstract ArrayList<Integer> nodeIdsRepliedyes();
+	public abstract String getContentOfFile(int NodeID);
 }
