@@ -64,19 +64,12 @@ public class Receiver implements Runnable {
                     	
                     }else if(receivedMsg.getMsgType()==14){
                     	//case 4:Type 14, write the copy received into ur file system.
+                    	writeLatestIntoLocal(receivedMsg);
+                    }else if(receivedMsg.getMsgType()==15){
+                    	 //case 5:Type 15, Write Release Lock
+                    	writeReleaseLock(receivedMsg);
                     }
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    
-                    //case 5:Type 15, Write Release Lock
-                    
-                    
-                }
+            }
                 }// end for
                 } catch (IOException e) {
 	                e.printStackTrace();
@@ -123,8 +116,20 @@ public class Receiver implements Runnable {
 	}
 
 	public void writeLatestIntoLocal(Message receivedMsg){
-		
+		FileSystem.bup(receivedMsg.getFileName());
+		FileSystem.write(receivedMsg.getFileName(), receivedMsg.getData());
+		FileSystem.setVersionForFile(receivedMsg.getFileName(), receivedMsg.getFileVersion());
 	}
+	
+	public void writeReleaseLock(Message receivedMsg){
+		if(receivedMsg.getData().equals("Release")){//Plain release
+			FileSystem.releaseWriteLock(receivedMsg.getFileName());
+		}else if(receivedMsg.getData().equals("RollBack")){
+			FileSystem.releaseWriteLock(receivedMsg.getFileName());
+			FileSystem.restorePreviousVersion(receivedMsg.getFileName());
+		}
+	}
+	
 			public static Object deserialize(byte[] obj) {
 				
 				ByteArrayInputStream bos = new ByteArrayInputStream(obj);

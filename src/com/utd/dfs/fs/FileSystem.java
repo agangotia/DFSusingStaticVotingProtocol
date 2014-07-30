@@ -130,6 +130,7 @@ public class FileSystem {
 	
 	public static void restorePreviousVersion(String file_name){
 		DFSFile file_obj= fsobject.get(file_name);
+		file_obj.setFile_version(file_obj.file_version_old);
 		file_obj.restorePreviousVersion();
 	}
 	
@@ -161,4 +162,9 @@ public class FileSystem {
 		return file_obj.getFile_version();
 	}
 
+	public static void setVersionForFile(String File,int version){
+		DFSFile file_obj= fsobject.get(File);
+		file_obj.file_version_old=file_obj.getFile_version();
+		file_obj.setFile_version(version);
+	}
 }

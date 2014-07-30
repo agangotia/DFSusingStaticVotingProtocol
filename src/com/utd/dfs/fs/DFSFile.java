@@ -12,6 +12,7 @@ public class DFSFile {
 	private String path;
 	
 	private int file_version;
+	public int file_version_old;
 	
 	private String data;
 	public String cacheddata;

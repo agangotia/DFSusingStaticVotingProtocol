@@ -96,6 +96,7 @@ public class ReadWrite extends Thread{
 							if(result){// all nodes were able to update the changes
 								//Again a Broadcast to release the locks.
 								FileSystem.releaseWriteLock(mess.file);
+								FileSystem.setVersionForFile(mess.file, FileSystem.getVersionForFile(mess.file));
 								FileSystem.map_filestatus.put(mess.file, "Complete");	
 								
 							}else{//if one of them fails.
