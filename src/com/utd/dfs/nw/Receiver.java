@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.Constants;
 import com.utd.dfs.DFSMain;
+import com.utd.dfs.fs.DFSFile;
+import com.utd.dfs.fs.FileSystem;
 import com.utd.dfs.msg.Message;
 import com.utd.dfs.utils.ConnectionManager;
 
@@ -46,6 +48,32 @@ public class Receiver implements Runnable {
 
                     byteBuffer.clear();
                     
+                    if(receivedMsg.getMsgType()==0 ||receivedMsg.getMsgType()==10){
+                    //case 1: When Message Type is 0 & 10
+                    //i.e Read or Write Quorum Request
+                    ReadWriteQuorumRequest(receivedMsg);
+                    }else if(receivedMsg.getMsgType()==3){
+                    	//case 2: When Message Type is 3
+                        //i.e Send the latest from ur copy of file
+                      
+                    	sendLatestFromLocal(receivedMsg);
+                    	
+                    }else if(receivedMsg.getMsgType()==5){
+                    	//case 3: Unlock ur Read Copy Message TYpe 5  
+                    	sendLatestFromLocal(receivedMsg);
+                    	
+                    }else if(receivedMsg.getMsgType()==14){
+                    	//case 4:Type 14, write the copy received into ur file system.
+                    }
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    //case 5:Type 15, Write Release Lock
                     
                     
                 }
@@ -62,6 +90,41 @@ public class Receiver implements Runnable {
 
 		}
 	}	
+	
+	public void ReadWriteQuorumRequest(Message receivedMsg){
+		//Check in my file System Do i have the lock ,
+		// if no one locked send a reply with ur weight.
+		if(receivedMsg.getMsgType()==0){//Reading
+			if(FileSystem.getWriteLockStatus(receivedMsg.getFileName())){
+				Message tosend=receivedMsg.getReadMessageQuorumReplyFalse();
+				DFSMain.sendQueue.add(tosend);
+			}else{
+				FileSystem.lock(receivedMsg.getFileName(),"R");
+				Message tosend=receivedMsg.getReadMessageQuorumReplyTrue(DFSMain.currentNode.getMy_votes(),FileSystem.getVersionForFile(receivedMsg.getFileName()));
+				DFSMain.sendQueue.add(tosend);
+			}
+		}else if(receivedMsg.getMsgType()==10){
+			if(FileSystem.getWriteLockStatus(receivedMsg.getFileName()) ||FileSystem.getReadLockStatus(receivedMsg.getFileName())){
+				Message tosend=receivedMsg.getWriteMessageQuorumReplyFalse();
+				DFSMain.sendQueue.add(tosend);
+			}else{
+				Message tosend=receivedMsg.getWriteMessageQuorumReplyTrue(DFSMain.currentNode.getMy_votes(),FileSystem.getVersionForFile(receivedMsg.getFileName()));
+				DFSMain.sendQueue.add(tosend);
+			}
+				
+		}
+	}
+	
+	public void sendLatestFromLocal(Message receivedMsg){
+		String data=FileSystem.getCachedData(receivedMsg.getFileName());
+		int version=FileSystem.getVersionForFile(receivedMsg.getFileName());
+		Message localCopy=receivedMsg.sendLatestLocalCopy(data,version);
+		DFSMain.sendQueue.add(localCopy);
+	}
+
+	public void writeLatestIntoLocal(Message receivedMsg){
+		
+	}
 			public static Object deserialize(byte[] obj) {
 				
 				ByteArrayInputStream bos = new ByteArrayInputStream(obj);

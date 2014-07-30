@@ -63,7 +63,7 @@ public class FileSystem {
 		return true;
 		}
 	}
-	public static void lock(String file_name, String lock_type){
+	public static synchronized void lock(String file_name, String lock_type){
 		DFSFile file_obj=null;
 		file_obj= fsobject.get(file_name);
 		synchronized(file_obj){
@@ -73,9 +73,15 @@ public class FileSystem {
 			file_obj.readLockCount++;
 		}
 		else{
+			file_obj.cacheddata=file_obj.getData();
 			file_obj.rwl.writeLock().lock();
 		}
 		}
+	}
+	
+	public static String getCachedData(String filename){
+		DFSFile file_obj= fsobject.get(filename);
+		return file_obj.cacheddata;
 	}
 	public static void checkout(Status foc){
 		if(DFSMain.currentNode.getNodeID()!=foc.getMaxVersionNodeId()){
@@ -136,5 +142,23 @@ public class FileSystem {
 		 file_obj.relaseRead();
 	}
 	
+	
+	public static boolean getWriteLockStatus(String fileName){
+		DFSFile file_obj= fsobject.get(fileName);
+		return file_obj.rwl.isWriteLocked();
+	}
+	
+	public static boolean getReadLockStatus(String fileName){
+		DFSFile file_obj= fsobject.get(fileName);
+		if( file_obj.readLockCount>0)
+			return true;
+		else 
+			return false;
+	}
+	
+	public static int getVersionForFile(String File){
+		DFSFile file_obj= fsobject.get(File);
+		return file_obj.getFile_version();
+	}
 
 }

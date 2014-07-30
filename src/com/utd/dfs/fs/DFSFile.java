@@ -14,6 +14,7 @@ public class DFSFile {
 	private int file_version;
 	
 	private String data;
+	public String cacheddata;
 	public String getData() {
 		return data;
 	}

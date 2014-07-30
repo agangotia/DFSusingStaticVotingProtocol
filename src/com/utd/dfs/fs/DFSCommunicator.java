@@ -109,7 +109,7 @@ public class DFSCommunicator {
 		for (Integer key : Nodes) {
 			
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), key,
-						14, "", fileName);
+						14, data, fileName,version);
 				DFSMain.sendQueue.add(m);
 
 		    

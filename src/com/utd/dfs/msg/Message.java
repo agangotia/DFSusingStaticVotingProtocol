@@ -35,6 +35,17 @@ public class Message implements Serializable {
 	
 
 
+	public Message(String messageId, int senderNodeID, int recipientNodeID,
+			int msgType, String data, String fileName, int fileVersion) {
+		super();
+		this.messageId = messageId;
+		this.senderNodeID = senderNodeID;
+		this.recipientNodeID = recipientNodeID;
+		this.msgType = msgType;
+		this.data = data;
+		this.fileName = fileName;
+		this.fileVersion = fileVersion;
+	}
 	private int senderNodeID;
 	private int recipientNodeID;
 	
@@ -139,5 +150,28 @@ public class Message implements Serializable {
 
 	public void setFileVersion(int fileVersion) {
 		this.fileVersion = fileVersion;
+	}
+	
+	public Message getReadMessageQuorumReplyTrue(int weight,int version){
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 1, weight+"", fileName,version);
+		return msg;
+	}
+	public Message getReadMessageQuorumReplyFalse(){
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 2, 0+"", fileName);
+		return msg;
+	}
+	
+	public Message getWriteMessageQuorumReplyTrue(int weight,int version){
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 11, weight+"", fileName,version);
+		return msg;
+	}
+	public Message getWriteMessageQuorumReplyFalse(){
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 12, 0+"", fileName);
+		return msg;
+	}
+	
+	public Message sendLatestLocalCopy(String data,int version){
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 4, data, fileName,version);
+		return msg;
 	}
 }

@@ -126,11 +126,14 @@ public class DFSMain {
 		//Start the Threads objects
 		Thread recvThread;//T2 RECEIVE THREAD
 		Thread sendThread;//T1 SEND THREAD
+		Thread monitorthread;
 		try {
 			sendThread = new Thread(new Sender(),"T1");
 			sendThread.start();
 			recvThread = new Thread(new Receiver(),"T2");
 			recvThread.start();
+			monitorthread=new Thread(new Monitor(),"MT");
+			monitorthread.start();
 		} catch (IllegalThreadStateException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -161,6 +164,8 @@ public class DFSMain {
 				sendThread.join();
 			if(sendThread!=null)
 				sendThread.join();
+			if(monitorthread!=null)
+				monitorthread.join();
         } catch (Exception e) {
             e.printStackTrace();
         }

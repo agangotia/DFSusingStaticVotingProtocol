@@ -47,6 +47,9 @@ public class ReadWrite extends Thread{
 							FileSystem.map_filestatus.put(mess.file, "Complete");
 								
 							}else{
+							//Call the nodes for release locks.
+							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
+							FileSystem.releaseReadLock(foc.getFile_name());
 							FileSystem.map_filestatus.remove(mess.file);
 							return;
 						}
@@ -103,6 +106,8 @@ public class ReadWrite extends Thread{
 							}
 							
 						}else{
+							DFSCommunicator.MulticastRequestForWriteLockRelease(mess.file,NodesYes,"Release");
+							FileSystem.releaseWriteLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
 							return;
 						}

@@ -34,6 +34,10 @@ public  abstract class Status {
 	 * that have timeout, and calls notify explicitly upon them.
 	 */
 	private long waitStart;
+	public long getWaitStart() {
+		return waitStart;
+	}
+
 	/**
 	 * THis is the synchronized wait notify object.
 	 * ReadWrite thread, calls wait on this object,
@@ -43,6 +47,10 @@ public  abstract class Status {
 	private Object o;
 	
 	
+	public Object getO() {
+		return o;
+	}
+
 	public Status(String fileName, int expectedReplies, Object o) {
 		super();
 		this.fileName = fileName;
