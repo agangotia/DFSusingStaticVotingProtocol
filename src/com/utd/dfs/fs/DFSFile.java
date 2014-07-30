@@ -2,7 +2,9 @@ package com.utd.dfs.fs;
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.utils.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DFSFile {
@@ -60,6 +62,11 @@ public class DFSFile {
 		try {
 			FileFeatures.copyFile("data\\"+fname+"_bk",path);
 			//Need to get the data  from file.
+			@SuppressWarnings("resource")
+			String content = new Scanner(new File("path")).useDelimiter("\\Z").next();
+			data=content;
+			file_version=file_version_old;
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
