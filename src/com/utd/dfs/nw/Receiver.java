@@ -45,6 +45,9 @@ public class Receiver implements Runnable {
                         	DFSMain.applicationRunning=false;
 
                     byteBuffer.clear();
+                    
+                    
+                    
                 }
                 }// end for
                 } catch (IOException e) {

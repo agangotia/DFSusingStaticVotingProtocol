@@ -1,5 +1,7 @@
 package com.utd.dfs.statustrackers;
 
+import java.util.ArrayList;
+
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.fs.DFSFile;
 import com.utd.dfs.msg.Message;
@@ -9,6 +11,8 @@ public class StatusReadWriteQuorumRequest extends Status {
 	private int local_nodeid;
 	private int local_version;
 	private int maxVersionNodeId;
+	
+
 	private int votes_acquired;
 	
 
@@ -44,6 +48,9 @@ public class StatusReadWriteQuorumRequest extends Status {
 		return false;
 	}
 	
+	/**
+	 * Change this acc to votes weights
+	 */
 	public void addReply(Message m){
 		if(m.getData().equals("Agree")){
 			votes_acquired++;
@@ -55,4 +62,11 @@ public class StatusReadWriteQuorumRequest extends Status {
 		super.addReply(m);
 	}
 
+	public int getMaxVersionNodeId() {
+		return maxVersionNodeId;
+	}
+	
+	public ArrayList<Integer> nodeIdsRepliedyes(){
+		return new ArrayList<Integer>();
+	}
 }

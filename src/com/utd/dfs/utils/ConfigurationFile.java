@@ -2,10 +2,13 @@ package com.utd.dfs.utils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Set;
 
 
 
@@ -14,7 +17,8 @@ import com.utd.dfs.fs.FileSystem;
 
 public class ConfigurationFile {
 
-	public void generate_cffile(int operations_count,int file_minindex, int file_maxindex){
+	public static Set<String> filesContentsList= new HashSet<String>();
+	public static void generate_cffile(int operations_count,int file_minindex, int file_maxindex){
 		int remaining_ops=operations_count;
 		int read_ops= (int) Math.floor(.7*operations_count);
 		int write_ops= (int) Math.ceil(0.3*operations_count);
@@ -61,7 +65,7 @@ public class ConfigurationFile {
 		}
 	}
 
-	public void read_configuration(String config_file, Queue<FileMessage> file_queue[]){//maintaining separate queues for individual operations on file
+	public static void read_configuration(String config_file, Queue<FileMessage> file_queue[]){//maintaining separate queues for individual operations on file
 		File f = new File(config_file);
 		FileMessage message=null;
 		try {
@@ -72,6 +76,7 @@ public class ConfigurationFile {
 				//System.out.println(line);
 				String[] linesplit= line.split(" ");
 				Integer queue_index= Integer.parseInt(linesplit[0].substring(4));
+				filesContentsList.add(linesplit[0]);
 				if(linesplit.length>2){
 					message=new FileMessage(linesplit[0],linesplit[1],linesplit[2]);
 					FileSystem.fsobject.put(linesplit[0], new DFSFile(linesplit[0],0,linesplit[2]));
@@ -87,10 +92,10 @@ public class ConfigurationFile {
 			e.printStackTrace();
 		}
 	}
-	public static void main(String args[]){
+	/*public static void main(String args[]){
 		ConfigurationFile f= new ConfigurationFile();
 		f.generate_cffile(10, 0, 3);
-		/*@SuppressWarnings("unchecked")
+		@SuppressWarnings("unchecked")
 		Queue<FileMessage> q[]= new Queue[4];
 		q[0]= new LinkedList<FileMessage>();
 		q[1]=new LinkedList<FileMessage>();
@@ -99,7 +104,7 @@ public class ConfigurationFile {
 		f.read_configuration("config_file", q);
 		for(int i=0; i<4; i++){
 			System.out.println(q[i].toString());
-		}*/
+		}
 		try {
 			FileFeatures.copyFile("config_file", "data\\config_bkup");
 			FileFeatures.rename("data\\config_bkup", "data\\config_backup");
@@ -108,4 +113,4 @@ public class ConfigurationFile {
 			e.printStackTrace();
 		}
 	}
-}
+*/}

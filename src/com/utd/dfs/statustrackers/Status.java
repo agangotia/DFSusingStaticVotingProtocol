@@ -1,5 +1,6 @@
 package com.utd.dfs.statustrackers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.utd.dfs.msg.Message;
@@ -17,7 +18,15 @@ import com.utd.dfs.msg.Message;
 public  abstract class Status {
 
 	private String fileName;//This is the FileName for which we are maintaining the datastructure
+	public String getFileName() {
+		return fileName;
+	}
+
 	private HashMap<Integer,Message> repliesBucket;// replies received
+	public HashMap<Integer, Message> getRepliesBucket() {
+		return repliesBucket;
+	}
+
 	private int expectedReplies;//Total nodes, usually u will exPECT  replies from all
 	/**
 	 * waitStart used for time out.
@@ -43,6 +52,14 @@ public  abstract class Status {
 		this.waitStart=System.currentTimeMillis();
 	}
 	
+	public int getExpectedReplies() {
+		return expectedReplies;
+	}
+
+	public void setExpectedReplies(int expectedReplies) {
+		this.expectedReplies = expectedReplies;
+	}
+
 	public void addReply(Message m){
 		repliesBucket.put(m.getSenderNodeID(),m);
 		synchronized(o){
@@ -54,5 +71,6 @@ public  abstract class Status {
 	
 	public abstract boolean returnDecision();
 	
-		
+	public abstract int getMaxVersionNodeId();
+	public abstract ArrayList<Integer> nodeIdsRepliedyes();
 }

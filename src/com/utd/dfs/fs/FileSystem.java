@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.utd.dfs.DFSMain;
+import com.utd.dfs.statustrackers.Status;
 import com.utd.dfs.utils.FileOperationsCount;
 import com.utd.dfs.utils.NodeDetails;
 
@@ -38,13 +39,13 @@ public class FileSystem {
 	 /**
 		 * Fills the File system with data
 		 */
-	public static boolean buildFileSystem(ArrayList<String[]> fileNames){
+	public static boolean buildFileSystem(Set<String> fileNames){
 		if(fileNames==null || fileNames.size()==0)
 			return false;
 		else{
-			for(String[] t:fileNames){
-				DFSFile file=new DFSFile(t[0], 0, t[1]);
-				fsobject.put(t[0], file);
+			for(String t:fileNames){
+				DFSFile file=new DFSFile(t, 0, "");
+				fsobject.put(t, file);
 			}
 			return true;
 		}
@@ -74,10 +75,10 @@ public class FileSystem {
 		}
 		}
 	}
-	public static void checkout(FileOperationsCount foc){
-		int latest_nodeid= foc.getlatest_versionNodeid();
-		if(foc.getLocal_nodeid()!=foc.getlatest_versionNodeid()){
+	public static void checkout(Status foc){
+		if(DFSMain.currentNode.getNodeID()!=foc.getMaxVersionNodeId()){
 			//get the latest version from node.. call function in consistency manager class
+			DFSCommunicator.unicastGetlatestForRead(foc.getMaxVersionNodeId(), foc.getFileName());
 		}
 	
 	}

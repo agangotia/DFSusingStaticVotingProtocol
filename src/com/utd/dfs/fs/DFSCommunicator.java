@@ -1,9 +1,11 @@
 package com.utd.dfs.fs;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.msg.Message;
 import com.utd.dfs.statustrackers.Status;
+import com.utd.dfs.statustrackers.StatusReadWriteQuorumRequest;
 /**
  * This is the Main Communication Provider and Status Checker.
  * For Each  Read Or Write Requests,
@@ -32,7 +34,8 @@ public class DFSCommunicator {
 	/**
 	 * Function : Broadcast All nodes, asking for votes for a read operation.
 	 */
-	public static void broadcastReadRequestForVotes(String fileName){
+	public static void broadcastReadRequestForVotes(String fileName,Status o){
+		mapFileStatus.put(fileName, o);
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
@@ -47,6 +50,27 @@ public class DFSCommunicator {
 	 * Function : Broadcast All nodes, asking for votes for a write operation.
 	 */
 	public static void broadcastWriteRequestForVotes(String fileName){
+		for (Integer key : DFSMain.mapNodes.keySet()) {
+			if(key!=DFSMain.currentNode.getNodeID()){
+				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
+						10, "", fileName);
+				DFSMain.sendQueue.add(m);
+			}
+		    
+		}
+	}
+	
+	/**
+	 * Function : Unicast to get the reply
+	 */
+	public static void unicastGetlatestForRead(int nodeId, String fileName){
+	
+	}
+	
+	/**
+	 * Function : Multicast All nodes, asking for read Lock Release.
+	 */
+	public static void MulticastWriteRequestForVotes(String fileName,ArrayList<Integer> Nodes){
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),

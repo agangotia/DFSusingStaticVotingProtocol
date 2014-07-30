@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.StringTokenizer;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -11,13 +12,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.fs.FileSystem;
-import com.utd.dfs.logicalclock.LogicalClock;
 import com.utd.dfs.msg.Message;
 import com.utd.dfs.nw.Receiver;
 import com.utd.dfs.nw.Sender;
+import com.utd.dfs.utils.ConfigurationFile;
 import com.utd.dfs.utils.ConnectionManager;
+import com.utd.dfs.utils.FileMessage;
 import com.utd.dfs.utils.NodeDetails;
-
+import com.utd.dfs.utils.ProcessFileQueues;
 
 public class DFSMain {
 	
@@ -72,12 +74,6 @@ public class DFSMain {
 	 */
 	public static BlockingQueue<Message> recvQueue=new ArrayBlockingQueue<Message>(Constants.SIZESRECVQ, true);;
 	
-
-	
-	/**
-	 * File system onject
-	 */
-	public static FileSystem fs=new FileSystem();
 	
 	/**
 	 * Quorum Sizes
@@ -126,6 +122,7 @@ public class DFSMain {
 			return;
 		}
 		
+		
 		//Start the Threads objects
 		Thread recvThread;//T2 RECEIVE THREAD
 		Thread sendThread;//T1 SEND THREAD
@@ -145,6 +142,17 @@ public class DFSMain {
 		if(Constants.TESTSENDERRECEIVER && currentNode.getNodeID()==2){
 			testSenderReceiver();
 		}
+		
+		//generate configuration file
+		//get these values from topology file
+		ConfigurationFile.generate_cffile(operations_count, file_minindex, file_maxindex);
+		Queue<FileMessage> file_queue[]= new Queue[file_maxindex-file_minindex];
+		ConfigurationFile.read_configuration("config_file", file_queue);
+		//file system is Up
+		FileSystem.buildFileSystem(ConfigurationFile.filesContentsList);
+		//Actual operations start here
+		ProcessFileQueues.process_queue(file_queue);
+		
 		
 	
 		//wait for all threads to finish

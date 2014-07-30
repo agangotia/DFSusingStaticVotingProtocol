@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.Queue;
 import com.utd.dfs.fs.*;
 
-public class ProessFileQueues {
+public class ProcessFileQueues {
 	Map<String,Integer> map_responsecount= new HashMap<String,Integer>();
-	FileOperationsCount[] foc;
+	static FileOperationsCount[] foc;
 
 //	ReadWrite rw= new ReadWrite();
 	/**
@@ -15,7 +15,7 @@ public class ProessFileQueues {
 	 * @param q
 	 */
 
-	public void process_queue(Queue<FileMessage> q[]){
+	public static void process_queue(Queue<FileMessage> q[]){
 		foc= new FileOperationsCount[q.length];
 		for(int i=0; i<foc.length;i++){
 			foc[i]=new FileOperationsCount();

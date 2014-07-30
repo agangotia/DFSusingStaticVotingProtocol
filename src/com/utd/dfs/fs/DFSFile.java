@@ -10,6 +10,7 @@ public class DFSFile {
 	private String fname;
 	
 	private int file_version;
+	
 	private String data;
 	public ReentrantReadWriteLock rwl;
 	public int readLockCount;//only unlock readlock when this is 0.
@@ -71,5 +72,14 @@ public class DFSFile {
 		readLockCount--;
 		if(readLockCount==0)
 			rwl.readLock().unlock();
+	}
+	
+	public int getFile_version() {
+		return file_version;
+	}
+
+
+	public void setFile_version(int file_version) {
+		this.file_version = file_version;
 	}
 }
