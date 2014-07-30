@@ -11,11 +11,9 @@ import com.utd.dfs.statustrackers.StatusReadWriteQuorumRequest;
 
 public class ReadWrite extends Thread{
 	FileMessage mess;
-	FileOperationsCount foc;
-	public ReadWrite(FileMessage mess, FileOperationsCount foc) {
+	public ReadWrite(FileMessage mess) {
 		super();
 		this.mess = mess;
-		this.foc=foc;
 	}
 	
 	public void run(){
@@ -42,14 +40,14 @@ public class ReadWrite extends Thread{
 							
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
 							
-							String data=FileSystem.read(foc.getFile_name());
-							FileSystem.releaseReadLock(foc.getFile_name());
+							String data=FileSystem.read(mess.file);
+							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.put(mess.file, "Complete");
 								
 							}else{
 							//Call the nodes for release locks.
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
-							FileSystem.releaseReadLock(foc.getFile_name());
+							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
 							return;
 						}
@@ -86,7 +84,7 @@ public class ReadWrite extends Thread{
 						if(objStatus.returnDecision()){//once has the majority
 							FileSystem.bup(mess.file);
 							FileSystem.checkout(objStatus);
-							FileSystem.write(foc.getFile_name(), mess.content);
+							FileSystem.write(mess.file, mess.content);
 							//Pass on to Consistency Manager to publish the changes to Quorum.
 							//Synchronized on map object inside consistency manager and wait
 							//till u notify

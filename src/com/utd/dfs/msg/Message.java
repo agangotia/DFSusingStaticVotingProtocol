@@ -23,7 +23,7 @@ import java.io.Serializable;
  * @author Anupam Gangotia
  * Profile::http://en.gravatar.com/gangotia
  * github::https://github.com/agangotia
-*/
+ */
 public class Message implements Serializable {
 
 
@@ -32,7 +32,7 @@ public class Message implements Serializable {
 
 
 	private String messageId;
-	
+
 
 
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
@@ -48,18 +48,18 @@ public class Message implements Serializable {
 	}
 	private int senderNodeID;
 	private int recipientNodeID;
-	
+
 	private int msgType;
-	
+
 	private String data;
-	
+
 	private String fileName;
-	
+
 
 	private int fileVersion;
-	
+
 	public Message(){
-		
+
 	}
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
 			int msgType, String data, String fileName) {
@@ -71,7 +71,7 @@ public class Message implements Serializable {
 		this.data = data;
 		this.fileName = fileName;
 	}
-	
+
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
 			int msgType, String data) {
 		super();
@@ -127,7 +127,7 @@ public class Message implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 	public String printMessage(){
 		return "MID-"+this.messageId +
 				"\nType-"+this.msgType+
@@ -135,7 +135,7 @@ public class Message implements Serializable {
 				"\nReciever-"+this.recipientNodeID+
 				"\nContent-"+this.data;
 	}
-	
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -151,7 +151,7 @@ public class Message implements Serializable {
 	public void setFileVersion(int fileVersion) {
 		this.fileVersion = fileVersion;
 	}
-	
+
 	public Message getReadMessageQuorumReplyTrue(int weight,int version){
 		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 1, weight+"", fileName,version);
 		return msg;
@@ -160,7 +160,7 @@ public class Message implements Serializable {
 		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 2, 0+"", fileName);
 		return msg;
 	}
-	
+
 	public Message getWriteMessageQuorumReplyTrue(int weight,int version){
 		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 11, weight+"", fileName,version);
 		return msg;
@@ -169,7 +169,7 @@ public class Message implements Serializable {
 		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 12, 0+"", fileName);
 		return msg;
 	}
-	
+
 	public Message sendLatestLocalCopy(String data,int version){
 		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 4, data, fileName,version);
 		return msg;

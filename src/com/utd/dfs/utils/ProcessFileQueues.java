@@ -16,10 +16,7 @@ public class ProcessFileQueues {
 	 */
 
 	public static void process_queue(Queue<FileMessage> q[]){
-		foc= new FileOperationsCount[q.length];
-		for(int i=0; i<foc.length;i++){
-			foc[i]=new FileOperationsCount();
-		}
+		
 		//to be completed........................ based on readwrite class..........
 		while(true){
 			int exit_flag=1;
@@ -29,7 +26,7 @@ public class ProcessFileQueues {
 					if(!FileSystem.map_filestatus.containsKey(message.file)) {
 	//					rw.proceess_input(message);
 						FileSystem.map_filestatus.put(message.file, "Pending");
-						Thread readWrite=new Thread(new ReadWrite(message, foc[i]),"RW"+i);
+						Thread readWrite=new Thread(new ReadWrite(message));
 						readWrite.start();
 					}
 					if(FileSystem.map_filestatus.get(message.file).equals("complete")){
