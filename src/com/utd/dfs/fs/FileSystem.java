@@ -64,7 +64,7 @@ public class FileSystem {
 		
 				DFSFile file=new DFSFile(fileName, 0, content);
 				fsobject.put(fileName, file);
-				FileFeatures.appendText("fs\\"+DFSMain.currentNode.getNodeID()+"\\"+fileName, content);
+				FileFeatures.appendText("fs//"+DFSMain.currentNode.getNodeID()+"//"+fileName, content);
 			line = bReader.readLine();
 			if(line!=null && line.length()==0)
 				break;
@@ -167,7 +167,11 @@ public class FileSystem {
 	}
 	public static void releaseReadLock(String fileName){
 		DFSFile file_obj= fsobject.get(fileName);
-		 file_obj.relaseRead();
+		if(file_obj!=null)
+			file_obj.relaseRead();
+		else{
+			System.out.print("!!!OOPs File Object is null");
+		}
 	}
 	
 	

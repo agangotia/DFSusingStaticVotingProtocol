@@ -44,6 +44,8 @@ public class ProcessFileQueues {
 				}
 			}
 			if(exit_flag==1){
+				System.out.println("-----------------------------------------------");
+				System.out.println("--------D   O     N     E    ------------------------");
 				break;
 			}
 		}

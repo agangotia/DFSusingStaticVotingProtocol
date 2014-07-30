@@ -37,7 +37,7 @@ public class DFSFile {
 		this.file_version = file_version;
 		this.data = data;
 		this.rwl= new ReentrantReadWriteLock();
-		path="fs\\"+DFSMain.currentNode.getNodeID()+"\\"+fname;
+		path="fs//"+DFSMain.currentNode.getNodeID()+"//"+fname;
 	}
 	/**
 	 * this is a readwritelock
@@ -52,7 +52,7 @@ public class DFSFile {
 	 */
 	public synchronized void backup_original(){
 		try {
-			FileFeatures.copyFile(path,"data\\"+fname+"_bk");
+			FileFeatures.copyFile(path,"data//"+fname+"_bk");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -60,7 +60,7 @@ public class DFSFile {
 	
 	public synchronized void restorePreviousVersion(){
 		try {
-			FileFeatures.copyFile("data\\"+fname+"_bk",path);
+			FileFeatures.copyFile("data//"+fname+"_bk",path);
 			//Need to get the data  from file.
 			@SuppressWarnings("resource")
 			String content = new Scanner(new File("path")).useDelimiter("\\Z").next();

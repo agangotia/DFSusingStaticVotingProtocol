@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -149,7 +150,10 @@ public class DFSMain {
 		//generate configuration file
 		//get these values from topology file
 		ConfigurationFile.generate_cffile(currentNode.getOpCounts(), Constants.FILEMININDEX, Constants.FILEMAXINDEX);
-		Queue<FileMessage> file_queue[]= new Queue[Constants.FILEMAXINDEX-Constants.FILEMININDEX];
+		Queue<FileMessage> file_queue[]= new Queue[Constants.FILEMAXINDEX-Constants.FILEMININDEX+1];
+		for(int i=0;i<file_queue.length;i++)
+			file_queue[i]=new LinkedList<FileMessage>(); 
+		
 		ConfigurationFile.read_configuration("config_file", file_queue);
 		//file system is Up
 		FileSystem.buildFileSystem();
@@ -209,6 +213,7 @@ public class DFSMain {
 					int opCount=Integer.parseInt((String) st.nextElement());
 					
 					NodeDetails nodeObj=new NodeDetails(nodeIDLoop, portNumber, address,delayFail,myVotes,totalVotes,isCoordinator,opCount);
+					System.out.println("Filling "+nodeIDLoop);
 					mapNodes.put(nodeIDLoop,nodeObj);
 					mapNodesByAddress.put(address+String.valueOf(portNumber),nodeObj);
 					nodesCount++;

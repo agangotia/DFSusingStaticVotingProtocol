@@ -12,8 +12,12 @@ public class Monitor implements Runnable {
 		while(DFSMain.applicationRunning){
 			for(String s:DFSCommunicator.mapFileStatus.keySet()){
 				Status o=DFSCommunicator.mapFileStatus.get(s);
-				if(System.currentTimeMillis()-o.getWaitStart()>Constants.timeOut)
-					o.getO().notify();
+				Object lock=DFSCommunicator.mapFileStatus.get(s).getO();
+				synchronized (lock) {
+					if(System.currentTimeMillis()-o.getWaitStart()>Constants.timeOut)
+						lock.notify();
+				}
+				
 			}
 			try {
 				Thread.sleep((1l/3)*Constants.timeOut);

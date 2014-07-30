@@ -12,6 +12,6 @@ public interface Constants {
 	
 	
 	//for File System
-	int FILEMININDEX=1;
-	int FILEMAXINDEX=3;
+	int FILEMININDEX=0;
+	int FILEMAXINDEX=2;
 }

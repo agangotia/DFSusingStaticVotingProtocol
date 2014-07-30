@@ -73,9 +73,10 @@ public class ConfigurationFile {
 			Scanner fread= new Scanner(f);
 			while(fread.hasNextLine()){
 				String line= fread.nextLine();
-				//System.out.println(line);
+				System.out.println("1"+line);
 				String[] linesplit= line.split(" ");
-				Integer queue_index= Integer.parseInt(linesplit[0].substring(4));
+				Integer queue_index= Integer.parseInt(linesplit[0].substring(4,5));
+				System.out.println("2"+queue_index);
 				filesContentsList.add(linesplit[0]);
 				if(linesplit.length>2){
 					message=new FileMessage(linesplit[0],linesplit[1],linesplit[2]);
@@ -85,6 +86,8 @@ public class ConfigurationFile {
 
 					message= new FileMessage(linesplit[0],linesplit[1],null);	
 				}
+				System.out.println("3"+message);
+				System.out.println("4"+file_queue);
 				file_queue[queue_index].add(message);
 			}
 		} catch (FileNotFoundException e) {
