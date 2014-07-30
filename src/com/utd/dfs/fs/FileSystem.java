@@ -122,9 +122,14 @@ public class FileSystem {
 		 file_obj.backup_original();
 	}
 	
+	public static void restorePreviousVersion(String file_name){
+		DFSFile file_obj= fsobject.get(file_name);
+		file_obj.restorePreviousVersion();
+	}
+	
 	public static void releaseWriteLock(String fileName){
 		DFSFile file_obj= fsobject.get(fileName);
-		 file_obj.releaseWrite(1);
+		 file_obj.releaseWrite();
 	}
 	public static void releaseReadLock(String fileName){
 		DFSFile file_obj= fsobject.get(fileName);

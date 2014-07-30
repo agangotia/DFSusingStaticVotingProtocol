@@ -1,4 +1,5 @@
 package com.utd.dfs.fs;
+import com.utd.dfs.DFSMain;
 import com.utd.dfs.utils.*;
 
 import java.io.IOException;
@@ -8,6 +9,7 @@ public class DFSFile {
 
 
 	private String fname;
+	private String path;
 	
 	private int file_version;
 	
@@ -31,6 +33,7 @@ public class DFSFile {
 		this.file_version = file_version;
 		this.data = data;
 		this.rwl= new ReentrantReadWriteLock();
+		path="FS\\"+DFSMain.currentNode.getNodeID()+"\\"+fname;
 	}
 	/**
 	 * this is a readwritelock
@@ -45,7 +48,16 @@ public class DFSFile {
 	 */
 	public synchronized void backup_original(){
 		try {
-			FileFeatures.copyFile(fname,"data\\"+fname+"_bk");
+			FileFeatures.copyFile(path,"data\\"+fname+"_bk");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public synchronized void restorePreviousVersion(){
+		try {
+			FileFeatures.copyFile("data\\"+fname+"_bk",path);
+			//Need to get the data  from file.
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -58,7 +70,7 @@ public class DFSFile {
 	public synchronized void append(String data){
 	//	rwl.writeLock().lock();
 		this.data+=data;
-		FileFeatures.appendText(fname, data);
+		FileFeatures.appendText(path, data);
 	}
 	public synchronized String read(){
 	//	rwl.readLock().lock();
@@ -66,17 +78,8 @@ public class DFSFile {
 		//rwl.readLock().unlock();
 		return this.data;
 	}
-	public synchronized void releaseWrite(int status){
-		if(status==1){//indicates that operation is a success
+	public  synchronized void releaseWrite(){
 			rwl.writeLock().unlock();
-		}
-		else{
-			try {
-				FileFeatures.copyFile("data\\"+fname+"_bk", fname);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
 	}
 	public synchronized void relaseRead(){
 		readLockCount--;
