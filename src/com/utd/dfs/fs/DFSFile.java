@@ -37,7 +37,7 @@ public class DFSFile {
 		this.file_version = file_version;
 		this.data = data;
 		this.rwl= new ReentrantReadWriteLock();
-		path="FS\\"+DFSMain.currentNode.getNodeID()+"\\"+fname;
+		path="fs\\"+DFSMain.currentNode.getNodeID()+"\\"+fname;
 	}
 	/**
 	 * this is a readwritelock

@@ -152,7 +152,7 @@ public class DFSMain {
 		Queue<FileMessage> file_queue[]= new Queue[Constants.FILEMAXINDEX-Constants.FILEMININDEX];
 		ConfigurationFile.read_configuration("config_file", file_queue);
 		//file system is Up
-		FileSystem.buildFileSystem(ConfigurationFile.filesContentsList);
+		FileSystem.buildFileSystem();
 		//Actual operations start here
 		ProcessFileQueues.process_queue(file_queue);
 		
@@ -250,6 +250,9 @@ public class DFSMain {
 		}
 		return true;
 	}
+	
+	
+	
 	
 	/**
 	 * This method checks the Sender & receiver thread by sending a dummy message

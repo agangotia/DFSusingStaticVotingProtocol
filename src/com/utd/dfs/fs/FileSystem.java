@@ -1,15 +1,22 @@
 package com.utd.dfs.fs;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
+import com.utd.dfs.Constants;
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.statustrackers.Status;
 import com.utd.dfs.statustrackers.StatusGetFile;
 import com.utd.dfs.statustrackers.StatusReadWriteQuorumRequest;
+import com.utd.dfs.utils.FileFeatures;
 import com.utd.dfs.utils.FileOperationsCount;
 import com.utd.dfs.utils.NodeDetails;
 
@@ -41,17 +48,37 @@ public class FileSystem {
 	 /**
 		 * Fills the File system with data
 		 */
-	public static boolean buildFileSystem(Set<String> fileNames){
-		if(fileNames==null || fileNames.size()==0)
-			return false;
-		else{
-			for(String t:fileNames){
-				DFSFile file=new DFSFile(t, 0, "");
-				fsobject.put(t, file);
-			}
-			return true;
-		}
+	public static boolean buildFileSystem(){
 		
+		
+		BufferedReader bReader = null;
+		
+		try {
+			bReader = new BufferedReader(new FileReader(Constants.FILECONFIG));
+		
+		String line = bReader.readLine();
+		while(line!=null){
+				StringTokenizer st = new StringTokenizer(line, ",");
+				String fileName=st.nextToken();
+				String content=st.nextToken()+"\n";
+		
+				DFSFile file=new DFSFile(fileName, 0, content);
+				fsobject.put(fileName, file);
+				FileFeatures.appendText("fs\\"+DFSMain.currentNode.getNodeID()+"\\"+fileName, content);
+			line = bReader.readLine();
+			if(line!=null && line.length()==0)
+				break;
+			}
+		} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return false;
+			} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 	
 	
