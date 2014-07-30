@@ -111,8 +111,8 @@ public class DFSMain {
 		}
 		
 		
-		writeQuorumSize=(totalNodes/2)+1;
-		readQuorumSize=totalNodes-writeQuorumSize;
+		writeQuorumSize=(currentNode.getTotal_votes()/2)+1;
+		readQuorumSize=currentNode.getTotal_votes()-writeQuorumSize;
 		
 		if(!ConnectionManager.createConnections(currentNode, connectionSocket,mapNodes)){
 			System.out

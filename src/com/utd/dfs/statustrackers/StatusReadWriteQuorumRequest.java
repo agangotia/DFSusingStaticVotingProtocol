@@ -52,8 +52,9 @@ public class StatusReadWriteQuorumRequest extends Status {
 	 * Change this acc to votes weights
 	 */
 	public void addReply(Message m){
-		if(m.getData().equals("Agree")){
-			votes_acquired++;
+		
+		if(Integer.parseInt(m.getData())>0){
+			votes_acquired+=Integer.parseInt(m.getData());
 			if(m.getFileVersion()>this.local_version){
 				this.maxVersionNodeId=m.getSenderNodeID();
 				this.local_version=m.getFileVersion();
