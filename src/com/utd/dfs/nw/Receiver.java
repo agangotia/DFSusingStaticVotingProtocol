@@ -13,9 +13,14 @@ import com.utd.dfs.fs.DFSFile;
 import com.utd.dfs.fs.FileSystem;
 import com.utd.dfs.msg.Message;
 import com.utd.dfs.utils.ConnectionManager;
+import com.utd.dfs.utils.FileFeatures;
 
 public class Receiver implements Runnable {
-
+	String logFile;
+	
+	Receiver(){
+		logFile=Constants.LOGFILERCVR+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
+	}
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -47,7 +52,7 @@ public class Receiver implements Runnable {
                         	DFSMain.applicationRunning=false;
 
                     byteBuffer.clear();
-                    
+                    FileFeatures.appendText(logFile, "Receiver Thread Message Received"+receivedMsg.printMessage());
                     if(receivedMsg.getMsgType()==0 ||receivedMsg.getMsgType()==10){
                     //case 1: When Message Type is 0 & 10
                     //i.e Read or Write Quorum Request
