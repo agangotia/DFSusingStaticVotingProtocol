@@ -157,10 +157,11 @@ public class Message implements Serializable {
 		 }		 
 		
 		return "MID-"+this.messageId +
-				"\nType-"+details+
-				"\nSender-"+this.senderNodeID+
-				"\nReciever-"+this.recipientNodeID+
-				"\nContent-"+this.data;
+				"\nType-"+this.msgType+" ;"+details+
+				"\nS:-"+this.senderNodeID+
+				"R:-"+this.recipientNodeID+
+				"\nContent-"+this.data+
+				"\nFName-"+this.fileName+" FVersion-"+this.fileVersion;
 	}
 
 	public String getFileName() {
