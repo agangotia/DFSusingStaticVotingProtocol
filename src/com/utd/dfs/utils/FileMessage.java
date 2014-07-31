@@ -4,14 +4,18 @@ public class FileMessage {
 	String operation;//read or write
 	String content=null;
 	String file=null;
-	public FileMessage(String file, String operation, String content) {
+	int line_index=0;
+	public FileMessage(int line_index,String file, String operation, String content) {
 		this.operation=operation;
 		this.content=content;
 		this.file=file;
+		this.line_index=line_index;
+		
 	}
-		public FileMessage(String operation, String content) {
+		public FileMessage(int line_index,String operation, String content) {
 		this.operation=operation;
 		this.content=content;
+		this.line_index=line_index;
 	}
 
 	public String toString(){
