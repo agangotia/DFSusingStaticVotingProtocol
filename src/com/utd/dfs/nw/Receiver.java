@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import com.sun.nio.sctp.SctpChannel;
 import com.utd.dfs.Constants;
 import com.utd.dfs.DFSMain;
+import com.utd.dfs.fs.DFSCommunicator;
 import com.utd.dfs.fs.DFSFile;
 import com.utd.dfs.fs.FileSystem;
 import com.utd.dfs.msg.Message;
+import com.utd.dfs.statustrackers.Status;
 import com.utd.dfs.utils.ConnectionManager;
 import com.utd.dfs.utils.FileFeatures;
 
@@ -57,8 +59,14 @@ public class Receiver implements Runnable {
                     //case 1: When Message Type is 0 & 10
                     //i.e Read or Write Quorum Request
                     ReadWriteQuorumRequest(receivedMsg);
+                    }else if(receivedMsg.getMsgType()==1 || receivedMsg.getMsgType()==11 || receivedMsg.getMsgType()==2 || receivedMsg.getMsgType()==4|| receivedMsg.getMsgType()==12){
+                    	//case 2: When Message Type is 1
+                        //i.e Now I have received the Read Yes,
+                    	Status obj=DFSCommunicator.mapFileStatus.get(receivedMsg.getFileName());
+                    	obj.addReply(receivedMsg);
+                    	
                     }else if(receivedMsg.getMsgType()==3){
-                    	//case 2: When Message Type is 3
+                    	//case 4: When Message Type is 3
                         //i.e Send the latest from ur copy of file
                       
                     	sendLatestFromLocal(receivedMsg);
