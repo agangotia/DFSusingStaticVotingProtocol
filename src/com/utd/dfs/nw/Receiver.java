@@ -18,7 +18,7 @@ import com.utd.dfs.utils.FileFeatures;
 public class Receiver implements Runnable {
 	String logFile;
 	
-	Receiver(){
+	public Receiver(){
 		logFile=Constants.LOGFILERCVR+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 	}
 	@Override
