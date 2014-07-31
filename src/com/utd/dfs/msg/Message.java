@@ -129,8 +129,35 @@ public class Message implements Serializable {
 	}
 
 	public String printMessage(){
+		
+		 String details="";
+		 switch(msgType){
+			 case 1:details="Read Reply Yes quorum wieght";
+				 break;
+			 case 2:details="Read Reply No";
+				 break;
+			 case 3:details="Send Latest Request";
+				 break;
+			 case 4:details="Latest File replied";
+				 break;
+			 case 5:details="Read Release Lock";
+				 break;
+			 case 10:details="Write Broadcast Request";
+				 break;
+			 case 11:details="Write Reply Yes";
+				 break;
+			 case 12:details="Write Reply No";
+				 break;
+			 case 14:details="write updated copy to quorum";
+				 break;
+			 case 15:details="write Release  Lock";
+				 break;
+			 default:details="Invalid Code";
+				 break;
+		 }		 
+		
 		return "MID-"+this.messageId +
-				"\nType-"+this.msgType+
+				"\nType-"+details+
 				"\nSender-"+this.senderNodeID+
 				"\nReciever-"+this.recipientNodeID+
 				"\nContent-"+this.data;
