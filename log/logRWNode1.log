@@ -1,0 +1,21 @@
+RW Thread For O:R,F: file0
+RW Thread For O:R,F: file0Inside ReadLock
+RW Thread For O:W,F: file1
+RW Thread For O:R,F: file2
+RW Thread For O:R,F: file2Inside ReadLock
+RW Thread For O:R,F: file0Broadcast Request Sent
+RW Thread For O:R,F: file2Broadcast Request Sent
+RW Thread For O:R,F: file2Broadcast Request Received
+RW Thread For O:R,F: file0Broadcast Request Received
+RW Thread For O:R,F: file0
+RW Thread For O:R,F: file0Inside ReadLock
+RW Thread For O:W,F: file1
+RW Thread For O:R,F: file2
+RW Thread For O:R,F: file2Inside ReadLock
+RW Thread For O:R,F: file0Broadcast Request Sent
+RW Thread For O:R,F: file2Broadcast Request Sent
+RW Thread For O:R,F: file0Broadcast Request Received
+Return Decision returnsfalse
+RW Thread For O:R,F: file0FILE READ OPERATION FAILED
+RW Thread For O:R,F: file2Broadcast Request Received
+Return Decision returnsfalse
