@@ -18,6 +18,7 @@ import com.utd.dfs.nw.Receiver;
 import com.utd.dfs.nw.Sender;
 import com.utd.dfs.utils.ConfigurationFile;
 import com.utd.dfs.utils.ConnectionManager;
+import com.utd.dfs.utils.FileFeatures;
 import com.utd.dfs.utils.FileMessage;
 import com.utd.dfs.utils.NodeDetails;
 import com.utd.dfs.utils.ProcessFileQueues;
@@ -82,6 +83,7 @@ public class DFSMain {
 	public static  int readQuorumSize;
 	public static  int writeQuorumSize;
 	
+	public static String logFileMain;
 	/**
 	 * This is the main.
 	 * Starting point of execution for our app.
@@ -110,10 +112,12 @@ public class DFSMain {
 			.println("Exit");
 			return;
 		}
-		
+		logFileMain=Constants.LOGFILEMAIN+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 		
 		writeQuorumSize=(currentNode.getTotal_votes()/2)+1;
 		readQuorumSize=currentNode.getTotal_votes()-writeQuorumSize;
+		FileFeatures.appendText(logFileMain, "Write Quorum Size:"+writeQuorumSize);
+		FileFeatures.appendText(logFileMain, "Read Quorum Size:"+readQuorumSize);
 		
 		if(!ConnectionManager.createConnections(currentNode, connectionSocket,mapNodes)){
 			System.out

@@ -37,7 +37,9 @@ public class ReadWrite extends Thread{
 						//once i have received the replies of votes
 						ArrayList<Integer> NodesYes=objStatus.nodeIdsRepliedyes();
 						DFSCommunicator.mapFileStatus.remove(mess.file);
+						FileFeatures.appendText(logFile, "Return Decision returns"+objStatus.returnDecision());
 						if(objStatus.returnDecision()){//once has the majority
+							
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MAJORITY FOR READ");
 							FileSystem.checkout(objStatus);
 							//Do the Broadcast for Read Lock Release to quorum

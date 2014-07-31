@@ -22,4 +22,5 @@ public interface Constants {
 	String LOGFILERWTHREAD="log"+FILESEPARATOR+"logRWNode";
 	String LOGFILEEND=".log";
 	String LOGFILERCVR="log"+FILESEPARATOR+"logReceiverNode";
+	String LOGFILEMAIN="log"+FILESEPARATOR+"logMAIN";
 }

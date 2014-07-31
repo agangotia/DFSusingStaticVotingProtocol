@@ -132,6 +132,10 @@ public class Message implements Serializable {
 		
 		 String details="";
 		 switch(msgType){
+		 
+		 	case 0:details="Read Broadcast Request";
+		 			break;
+	
 			 case 1:details="Read Reply Yes quorum wieght";
 				 break;
 			 case 2:details="Read Reply No";
@@ -155,13 +159,13 @@ public class Message implements Serializable {
 			 default:details="Invalid Code";
 				 break;
 		 }		 
-		
-		return "MID-"+this.messageId +
+		 String msgPrint="\n*********************************************\n";
+		return msgPrint+"MID-"+this.messageId +
 				"\nType-"+this.msgType+" ;"+details+
 				"\nS:-"+this.senderNodeID+
 				"R:-"+this.recipientNodeID+
 				"\nContent-"+this.data+
-				"\nFName-"+this.fileName+" FVersion-"+this.fileVersion;
+				"\nFName-"+this.fileName+" FVersion-"+this.fileVersion+msgPrint;
 	}
 
 	public String getFileName() {

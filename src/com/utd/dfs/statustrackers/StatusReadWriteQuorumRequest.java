@@ -34,6 +34,7 @@ public class StatusReadWriteQuorumRequest extends Status {
 
 	@Override
 	public boolean returnDecision() {
+		System.out.println("........");
 		if(typeOfRequest==1){//read Quorum
 			if(votes_acquired>=DFSMain.readQuorumSize)
 				return true;

@@ -41,11 +41,11 @@ public class Receiver implements Runnable {
                         Message receivedMsg = (Message) deserialize(byteBuffer
                                 .array());
                
-                        String msgPrint="*********************************************";
+                        String msgPrint="";
         	            msgPrint+="\nRecieved  Time-"+System.currentTimeMillis()+"\n"
         		                +receivedMsg.printMessage();
         	           
-        	            msgPrint+="\n*********************************************";
+        	  
                         System.out.println(msgPrint);
                         
                         if(Constants.TESTSENDERRECEIVER==true && receivedMsg.getMsgType()==30)//for check
