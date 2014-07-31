@@ -19,6 +19,7 @@ public interface Constants {
 	
 	
 	//For Logger
-	String LOGFILE="log//logNode";//Change this to \\ for windows
+	String LOGFILERWTHREAD="log"+FILESEPARATOR+"logRWNode";
 	String LOGFILEEND=".log";
+	String LOGFILERCVR="log"+FILESEPARATOR+"logReceiverNode";
 }

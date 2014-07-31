@@ -16,7 +16,7 @@ public class ReadWrite extends Thread{
 	public ReadWrite(FileMessage mess) {
 		super();
 		this.mess = mess;
-		logFile=Constants.LOGFILE+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
+		logFile=Constants.LOGFILERWTHREAD+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 	}
 	
 	public void run(){
