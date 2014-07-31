@@ -81,7 +81,7 @@ public class ConfigurationFile {
 				Integer queue_index= Integer.parseInt(linesplit[1].substring(4,5));
 				System.out.println("2"+queue_index);
 				filesContentsList.add(linesplit[1]);
-				if(linesplit.length>2){
+				if(linesplit.length>3){
 					message=new FileMessage(line_index,linesplit[1],linesplit[2],linesplit[3]);
 					FileSystem.fsobject.put(linesplit[1], new DFSFile(linesplit[0],0,linesplit[2]));
 				}
