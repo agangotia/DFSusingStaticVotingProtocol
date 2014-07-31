@@ -1,9 +1,11 @@
 package com.utd.dfs;
 
 public interface Constants {
-
-	String TOPOLOGYFILE="data//topology.txt";
-	String FILECONFIG="data//initialFileconfig.txt";
+	
+	String FILESEPARATOR="//";//Change this to \\ for windows 
+	
+	String TOPOLOGYFILE="data"+FILESEPARATOR+"topology.txt";
+	String FILECONFIG="data"+FILESEPARATOR+"initialFileconfig.txt";
 	
 	boolean TESTSENDERRECEIVER=false;
 	int SIZESENDQ=100;
@@ -14,4 +16,9 @@ public interface Constants {
 	//for File System
 	int FILEMININDEX=0;
 	int FILEMAXINDEX=2;
+	
+	
+	//For Logger
+	String LOGFILE="log//logNode";//Change this to \\ for windows
+	String LOGFILEEND=".log";
 }

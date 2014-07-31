@@ -2,6 +2,7 @@ package com.utd.dfs.utils;
 
 import java.util.ArrayList;
 
+import com.utd.dfs.Constants;
 import com.utd.dfs.DFSMain;
 import com.utd.dfs.fs.DFSCommunicator;
 import com.utd.dfs.fs.FileSystem;
@@ -11,44 +12,50 @@ import com.utd.dfs.statustrackers.StatusReadWriteQuorumRequest;
 
 public class ReadWrite extends Thread{
 	FileMessage mess;
+	String logFile;
 	public ReadWrite(FileMessage mess) {
 		super();
 		this.mess = mess;
+		logFile=Constants.LOGFILE+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 	}
 	
 	public void run(){
-		
+		FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file);
 		if(mess.operation.equals("R")){//read operation
 			if(FileSystem.getStatus(mess.file)){// check for lock
+				FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"Inside ReadLock");
 				FileSystem.lock(mess.file, "R");// if not lock acquire lock
 			
 				Object o=new Object();
 				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes, 1,o);
 				DFSCommunicator.broadcastReadRequestForVotes(mess.file,objStatus);
-				
+				FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"Broadcast Request Sent");
 				synchronized(o){
 					try {
 						o.wait();
+						FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"Broadcast Request Received");
 						//once i have received the replies of votes
 						ArrayList<Integer> NodesYes=objStatus.nodeIdsRepliedyes();
 						DFSCommunicator.mapFileStatus.remove(mess.file);
 						if(objStatus.returnDecision()){//once has the majority
-							
+							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MAJORITY FOR READ");
 							FileSystem.checkout(objStatus);
 							//Do the Broadcast for Read Lock Release to quorum
 							//Type 5 read broadcast lock release
-							
+							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MULTICAST LOCK RELEASE");
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
 							
 							String data=FileSystem.read(mess.file);
+							System.out.println("File Read"+data);
 							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.put(mess.file, "Complete");
-								
+							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION COMPLETE");	
 							}else{
 							//Call the nodes for release locks.
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
 							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
+							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION FAILED");
 							return;
 						}
 					} catch (InterruptedException e) {
@@ -95,7 +102,8 @@ public class ReadWrite extends Thread{
 								//Again a Broadcast to release the locks.
 								FileSystem.releaseWriteLock(mess.file);
 								FileSystem.setVersionForFile(mess.file, FileSystem.getVersionForFile(mess.file));
-								FileSystem.map_filestatus.put(mess.file, "Complete");	
+								FileSystem.map_filestatus.put(mess.file, "Complete");
+								System.out.println("File Write Complete");
 								
 							}else{//if one of them fails.
 								FileSystem.releaseWriteLock(mess.file);

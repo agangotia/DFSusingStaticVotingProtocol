@@ -39,6 +39,7 @@ public class ProcessFileQueues {
 				else{
 					exit_flag=0;
 				}
+				
 			}
 			if(exit_flag==1){
 				System.out.println("-----------------------------------------------");

@@ -64,7 +64,7 @@ public class FileSystem {
 		
 				DFSFile file=new DFSFile(fileName, 0, content);
 				fsobject.put(fileName, file);
-				FileFeatures.appendText("fs//"+DFSMain.currentNode.getNodeID()+"//"+fileName, content);
+				FileFeatures.appendText("fs"+Constants.FILESEPARATOR+DFSMain.currentNode.getNodeID()+Constants.FILESEPARATOR+fileName, content);
 			line = bReader.readLine();
 			if(line!=null && line.length()==0)
 				break;

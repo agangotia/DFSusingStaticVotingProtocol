@@ -18,7 +18,7 @@ import java.nio.channels.FileChannel;
 */
 public class FileFeatures {
 
-	public static void appendText(String fileName,String message){
+	public static synchronized void appendText(String fileName,String message){
 		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)))) {
 		    out.println(message);
 		}catch (IOException e) {
