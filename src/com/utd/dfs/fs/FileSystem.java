@@ -149,11 +149,15 @@ public class FileSystem {
 		return file_obj.read();
 	}
 	
-	public static void write(String file_name,String data){
+	public static void append(String file_name,String data){
 		DFSFile file_obj= fsobject.get(file_name);
 		 file_obj.append( data);
 	}
 	
+	public static void write(String file_name,String data){
+		DFSFile file_obj= fsobject.get(file_name);
+		 file_obj.write( data);
+	}
 	public static  void checkin(){
 	 
 	}

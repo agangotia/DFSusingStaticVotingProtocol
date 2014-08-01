@@ -79,9 +79,18 @@ public class DFSFile {
 	 */
 	public synchronized void append(String data){
 	//	rwl.writeLock().lock();
-		this.data+=data;
 		FileFeatures.appendText(path, data);
+		this.data+=data;
+		
 	}
+	
+	public synchronized void write(String data2){
+		//	rwl.writeLock().lock();
+			FileFeatures.writeText(path, data2);
+			this.data=data;
+			
+		}
+	
 	public synchronized String read(){
 	//	rwl.readLock().lock();
 		//just read the local copy

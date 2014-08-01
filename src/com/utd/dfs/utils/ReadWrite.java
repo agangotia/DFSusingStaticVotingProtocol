@@ -116,7 +116,7 @@ public class ReadWrite extends Thread{
 							FileSystem.checkout(objStatus,mapKeyIdentifier);
 							
 							
-							FileSystem.write(mess.file, mess.content);
+							FileSystem.append(mess.file, mess.content);
 							//Pass on to Consistency Manager to publish the changes to Quorum.
 							//Synchronized on map object inside consistency manager and wait
 							//till u notify

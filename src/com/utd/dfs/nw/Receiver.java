@@ -126,6 +126,8 @@ public class Receiver implements Runnable {
 				Message tosend=receivedMsg.getWriteMessageQuorumReplyFalse();
 				DFSMain.sendQueue.add(tosend);
 			}else{
+				//OOps this was so imp, to lock the file which i missed.
+				FileSystem.lock(receivedMsg.getFileName(), "W");
 				Message tosend=receivedMsg.getWriteMessageQuorumReplyTrue(DFSMain.currentNode.getMy_votes(),FileSystem.getVersionForFile(receivedMsg.getFileName()));
 				DFSMain.sendQueue.add(tosend);
 			}

@@ -26,6 +26,14 @@ public class FileFeatures {
 			System.out.println("Error in writing to file"+fileName);
 		}
 	}
+	public static synchronized void writeText(String fileName,String message){
+		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, false)))) {
+		    out.println(message);
+		}catch (IOException e) {
+		    //exception handling left as an exercise for the reader
+			System.out.println("Error in writing to file"+fileName);
+		}
+	}
 	public static void copyFile(String sFile, String dFile) throws IOException {
 		File sourceFile= new File(sFile);
 		File destFile= new File(dFile);
