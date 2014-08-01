@@ -127,7 +127,7 @@ public class FileSystem {
 					String data=objStatus.getContentOfFile(foc.getMaxVersionNodeId());
 					fsobject.get(foc.getFileName()).setFile_version(version);
 					fsobject.get(foc.getFileName()).setData(data);
-					DFSCommunicator.mapFileStatus.remove(foc.getFileName());
+					DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 					
 					}catch(InterruptedException ex){
 						ex.printStackTrace();

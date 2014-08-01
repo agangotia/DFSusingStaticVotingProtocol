@@ -18,9 +18,10 @@ public class StatusGetFile extends Status{
 	 * Change this acc to votes weights
 	 */
 	public void addReply(Message m){
-		if(m.getData().equals("Agree")){
+		/*if(m.getData().equals("Agree")){
 			votes_acquired++;
-		}
+		}*/
+		votes_acquired++;
 		super.addReply(m);
 	}
 	

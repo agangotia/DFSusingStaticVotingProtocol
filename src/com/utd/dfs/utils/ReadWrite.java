@@ -44,7 +44,7 @@ public class ReadWrite extends Thread{
 						FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"Broadcast Request Received");
 						//once i have received the replies of votes
 						ArrayList<Integer> NodesYes=objStatus.nodeIdsRepliedyes();
-						DFSCommunicator.mapFileStatus.remove(mess.file);
+						DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 						FileFeatures.appendText(logFile, "Return Decision returns"+objStatus.returnDecision());
 						if(objStatus.returnDecision()){//once has the majority
 							
@@ -109,7 +109,7 @@ public class ReadWrite extends Thread{
 						o.wait();
 						//once i have received the replies of votes
 						ArrayList<Integer> NodesYes=objStatus.nodeIdsRepliedyes();
-						DFSCommunicator.mapFileStatus.remove(mess.file);
+						DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 						if(objStatus.returnDecision()){//once has the majority
 							FileSystem.bup(mess.file);
 							

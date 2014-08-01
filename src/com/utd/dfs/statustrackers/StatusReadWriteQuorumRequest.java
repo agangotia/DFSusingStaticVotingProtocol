@@ -53,15 +53,23 @@ public class StatusReadWriteQuorumRequest extends Status {
 	 * Change this acc to votes weights
 	 */
 	public void addReply(Message m){
-		
-		if(Integer.parseInt(m.getData())>0){
-			votes_acquired+=Integer.parseInt(m.getData());
-			if(m.getFileVersion()>this.local_version){
-				this.maxVersionNodeId=m.getSenderNodeID();
-				this.local_version=m.getFileVersion();
+		try{
+				
+			if(Integer.parseInt(m.getData())>0){
+				votes_acquired+=Integer.parseInt(m.getData());
+				if(m.getFileVersion()>this.local_version){
+					this.maxVersionNodeId=m.getSenderNodeID();
+					this.local_version=m.getFileVersion();
+				}
 			}
+			super.addReply(m);
+		}catch(Exception ex){
+			System.out.println("Data 1"+m.getData());
+			System.out.println("Message 2"+m.printMessage());
+			ex.printStackTrace();
+			
 		}
-		super.addReply(m);
+		
 	}
 
 	public int getMaxVersionNodeId() {

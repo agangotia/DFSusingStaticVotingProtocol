@@ -31,6 +31,9 @@ public class Message implements Serializable {
 
 	private String messageId;
 
+	/**
+	 * NodeID-OperationNumber-FileName-Operation
+	 */
 	private String mapKeyIdentifier;
 
 
