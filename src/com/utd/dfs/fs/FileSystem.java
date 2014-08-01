@@ -118,7 +118,12 @@ public class FileSystem {
 			
 			Object o=new Object();
 			Status objStatus=new StatusGetFile(foc.getFileName(),o);
-			DFSCommunicator.mapFileStatus.put(mapKeyIdentifier, objStatus);
+			if(mapKeyIdentifier!=null)
+				DFSCommunicator.mapFileStatus.put(mapKeyIdentifier, objStatus);
+			else{
+				System.out.println("************error*********");
+				System.out.println("************map key is null*********");
+			}
 	
 			DFSCommunicator.unicastGetlatestForRead(foc.getMaxVersionNodeId(), foc.getFileName(),objStatus,mapKeyIdentifier);
 			synchronized(o){

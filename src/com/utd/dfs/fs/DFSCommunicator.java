@@ -37,7 +37,13 @@ public class DFSCommunicator {
 	 */
 	public static void broadcastReadRequestForVotes(String fileName,Status o,String mapKeyIdentifier){
 
-		mapFileStatus.put(mapKeyIdentifier, o);
+		if(mapKeyIdentifier!=null)
+			mapFileStatus.put(mapKeyIdentifier, o);
+		else{
+			System.out.println("************error*********");
+			System.out.println("************map key is null*********");
+		}
+		
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
@@ -52,7 +58,13 @@ public class DFSCommunicator {
 	 * Function : Broadcast All nodes, asking for votes for a write operation.
 	 */
 	public static void broadcastWriteRequestForVotes(String fileName,Status o,String mapKeyIdentifier){
-		mapFileStatus.put(mapKeyIdentifier, o);
+		if(mapKeyIdentifier!=null)
+			mapFileStatus.put(mapKeyIdentifier, o);
+		else{
+			System.out.println("************error*********");
+			System.out.println("************map key is null*********");
+		}
+		
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
@@ -67,7 +79,13 @@ public class DFSCommunicator {
 	 * Function : Unicast to get the reply
 	 */
 	public static void unicastGetlatestForRead(int nodeId, String fileName,Status o,String mapKeyIdentifier){
-		mapFileStatus.put(mapKeyIdentifier, o);
+		
+		if(mapKeyIdentifier!=null)
+			mapFileStatus.put(mapKeyIdentifier, o);
+		else{
+			System.out.println("************error*********");
+			System.out.println("************map key is null*********");
+		}
 		Message m=new Message("0", DFSMain.currentNode.getNodeID(), nodeId,
 				3, "", fileName,mapKeyIdentifier);
 		DFSMain.sendQueue.add(m);
@@ -106,7 +124,13 @@ public class DFSCommunicator {
 	public static boolean MulticastRequestForWriteUpdate(String fileName,ArrayList<Integer> Nodes,String data,int version,String mapKeyIdentifier){
 		Object o2=new Object();
 		Status objStatus2=new StatusFileWriteReplies(fileName, Nodes.size(), o2); 
-		mapFileStatus.put(mapKeyIdentifier, objStatus2);
+		if(mapKeyIdentifier!=null)
+			mapFileStatus.put(mapKeyIdentifier, objStatus2);
+		else{
+			System.out.println("************error*********");
+			System.out.println("************map key is null*********");
+		}
+		
 		for (Integer key : Nodes) {
 			
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), key,

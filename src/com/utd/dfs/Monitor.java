@@ -11,13 +11,23 @@ public class Monitor implements Runnable {
 
 		while(DFSMain.applicationRunning){
 			for(String s:DFSCommunicator.mapFileStatus.keySet()){
-				Status o=DFSCommunicator.mapFileStatus.get(s);
-				Object lock=DFSCommunicator.mapFileStatus.get(s).getO();
-				synchronized (lock) {
-					if(System.currentTimeMillis()-o.getWaitStart()>Constants.timeOut)
-						lock.notify();
+				if(s!=null){
+					Status o=DFSCommunicator.mapFileStatus.get(s);
+					if(o!=null){
+						Object lock=o.getO();
+						if(lock!=null){
+							synchronized (lock) {
+								if(System.currentTimeMillis()-o.getWaitStart()>Constants.timeOut)
+									lock.notify();
+							}
+						}else{
+							System.out.println("Unfortunately LOCK is null");
+						}
+						
+					}else{
+						System.out.println("Unfortunately Status object is null");
+					}
 				}
-				
 			}
 			try {
 				Thread.sleep((1l/3)*Constants.timeOut);
