@@ -186,6 +186,8 @@ public class Message implements Serializable {
 				 break;
 			 case 14:details="write updated copy to quorum";
 				 break;
+			 case 141:details="write updated Reply";
+			 break;
 			 case 15:details="write Release  Lock";
 				 break;
 			 default:details="Invalid Code";
