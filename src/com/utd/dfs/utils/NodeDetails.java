@@ -13,7 +13,7 @@ public class NodeDetails {
 	private int nodeID;
 	private int portNumber;	
 	private String address;
-	private int delay_fail;
+	private long delay_fail;
 	private int my_votes;
 	private int total_votes;
 	private char isCoordinator;
@@ -32,7 +32,7 @@ public class NodeDetails {
 	}
 
 
-	public NodeDetails(int nodeId,int portNumber,String address,int delay_fail, int my_votes, int total_votes, char coordinator_address,int opCounts){
+	public NodeDetails(int nodeId,int portNumber,String address,long delay_fail, int my_votes, int total_votes, char coordinator_address,int opCounts){
 		this.nodeID=nodeId;
 		this.portNumber=portNumber;
 		this.address=address;
@@ -65,10 +65,10 @@ public class NodeDetails {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public int getDelay_fail() {
+	public long getDelay_fail() {
 		return delay_fail;
 	}
-	public void setDelay_fail(int delay_fail) {
+	public void setDelay_fail(long delay_fail) {
 		this.delay_fail = delay_fail;
 	}
 	public int getMy_votes() {

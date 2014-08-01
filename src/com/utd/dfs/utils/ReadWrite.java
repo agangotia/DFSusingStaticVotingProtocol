@@ -74,11 +74,13 @@ public class ReadWrite extends Thread{
 							FileSystem.map_filestatus.remove(mess.file);
 							FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION FAILED");
+							backOff(DFSMain.currentNode.getDelay_fail());
 							return;
 						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 						FileSystem.map_filestatus.remove(mess.file);
+						backOff(DFSMain.currentNode.getDelay_fail());
 						return;
 					}
 				}
@@ -87,6 +89,7 @@ public class ReadWrite extends Thread{
 				System.out.println("file is locked. Unable to do the read operation "+mess.file);
 				FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
 				FileSystem.map_filestatus.remove(mess.file);
+				backOff(DFSMain.currentNode.getDelay_fail());
 				return;
 			}
 		
@@ -140,6 +143,7 @@ public class ReadWrite extends Thread{
 								FileSystem.restorePreviousVersion(mess.file);
 								FileSystem.map_filestatus.remove(mess.file);
 								FileFeatures.appendText(logFileM, " WRITE FAILED"+mess.line_index+mess.file);
+								backOff(DFSMain.currentNode.getDelay_fail());
 								//FileFeatures.bup()//
 							}
 							
@@ -148,11 +152,13 @@ public class ReadWrite extends Thread{
 							FileSystem.releaseWriteLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
 							FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+							backOff(DFSMain.currentNode.getDelay_fail());
 							return;
 						}
 					} catch (InterruptedException e) {
 						FileSystem.map_filestatus.remove(mess.file);
 						FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+						backOff(DFSMain.currentNode.getDelay_fail());
 						e.printStackTrace();
 						return;
 					}
@@ -160,11 +166,21 @@ public class ReadWrite extends Thread{
 			}else{
 				FileSystem.map_filestatus.remove(mess.file);
 				FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+				backOff(DFSMain.currentNode.getDelay_fail());
 				return;
 			}
 			
 		}
 		FileFeatures.appendText(logFileRWThread, "THread Terminates"+this.getName());
+	}
+	
+	public void backOff(long delay){
+		try {
+			Thread.sleep(delay);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }
