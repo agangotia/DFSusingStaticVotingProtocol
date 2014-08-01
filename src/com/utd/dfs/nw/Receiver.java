@@ -63,7 +63,14 @@ public class Receiver implements Runnable {
                     	//case 2: When Message Type is 1
                         //i.e Now I have received the Read Yes,
                     	Status obj=DFSCommunicator.mapFileStatus.get(receivedMsg.getFileName());
-                    	obj.addReply(receivedMsg);
+                    	if(obj!=null)
+                    		obj.addReply(receivedMsg);
+                    	else{
+                    		System.out.println("Unexpected Can't get the Status Object in Map for file name"+receivedMsg.getFileName());
+                    		FileFeatures.appendText(logFile, "Unexpected Can't get the Status Object in Map for file name"+receivedMsg.getFileName());
+                    		FileFeatures.appendText(logFile, "Printing Map \n"+printMap());
+                    		
+                    	}
                     	
                     }else if(receivedMsg.getMsgType()==3){
                     	//case 4: When Message Type is 3
@@ -156,5 +163,13 @@ public class Receiver implements Runnable {
 					System.out.print("Error in deserialization");
 				}
 				return null;
+			}
+			
+			public String printMap(){
+				StringBuffer data=new StringBuffer();
+				for(String key:DFSCommunicator.mapFileStatus.keySet()){
+					data.append("Key :"+key+"=>"+"Value :"+DFSCommunicator.mapFileStatus.get(key));
+				}
+				return data.toString();
 			}
 }

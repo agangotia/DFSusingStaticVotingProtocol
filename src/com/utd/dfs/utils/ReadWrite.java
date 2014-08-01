@@ -128,17 +128,19 @@ public class ReadWrite extends Thread{
 							DFSCommunicator.MulticastRequestForWriteLockRelease(mess.file,NodesYes,"Release");
 							FileSystem.releaseWriteLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
-							FileFeatures.appendText(logFileM, " WRITE Operation"+mess.line_index+mess.file);
+							FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
 							return;
 						}
 					} catch (InterruptedException e) {
 						FileSystem.map_filestatus.remove(mess.file);
+						FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
 						e.printStackTrace();
 						return;
 					}
 				}
 			}else{
 				FileSystem.map_filestatus.remove(mess.file);
+				FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
 				return;
 			}
 			
