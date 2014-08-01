@@ -89,7 +89,12 @@ public class DFSFile {
 		return this.data;
 	}
 	public  synchronized void releaseWrite(){
+		if(rwl.writeLock().isHeldByCurrentThread())
 			rwl.writeLock().unlock();
+		else{
+			System.out.println("**********Error************");
+			System.out.println("**********Write Lock is not yet acquired************");
+		}
 	}
 	public synchronized void relaseRead(){
 		readLockCount--;

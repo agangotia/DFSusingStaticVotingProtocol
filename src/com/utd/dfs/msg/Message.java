@@ -16,6 +16,7 @@ import java.io.Serializable;
  *  Type 11 :Write Reply Yes
  *  Type 12 :Write Reply No
  *  Type 14 : write "updated copy to quorum" Request
+ *  Type 141 : write "updated copy to quorum" Reply Yes
  *  Type 15 : write Release  Lock
  *  
  *  Type 30 :Test Message
@@ -235,6 +236,11 @@ public class Message implements Serializable {
 
 	public Message sendLatestLocalCopy(String data,int version){
 		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 4, data, fileName,version,mapKeyIdentifier);
+		return msg;
+	}
+	
+	public Message WriteLatestIntoLocalReply(){
+		Message msg=new Message(messageId,recipientNodeID,senderNodeID,141,"Updated",fileName,fileVersion,mapKeyIdentifier);
 		return msg;
 	}
 }

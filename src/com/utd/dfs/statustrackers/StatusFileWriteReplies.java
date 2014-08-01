@@ -28,7 +28,7 @@ public class StatusFileWriteReplies extends Status{
 	 * Change this acc to votes weights
 	 */
 	public void addReply(Message m){
-		if(m.getData().equals("Agree")){
+		if(m.getData().equals("Updated")){
 			votes_acquired++;
 		}
 		super.addReply(m);

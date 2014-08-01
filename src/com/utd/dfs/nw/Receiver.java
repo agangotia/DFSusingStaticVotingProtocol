@@ -59,7 +59,7 @@ public class Receiver implements Runnable {
                     //case 1: When Message Type is 0 & 10
                     //i.e Read or Write Quorum Request
                     ReadWriteQuorumRequest(receivedMsg);
-                    }else if(receivedMsg.getMsgType()==1 || receivedMsg.getMsgType()==11 || receivedMsg.getMsgType()==2 || receivedMsg.getMsgType()==4|| receivedMsg.getMsgType()==12){
+                    }else if(receivedMsg.getMsgType()==1 || receivedMsg.getMsgType()==11 || receivedMsg.getMsgType()==2 || receivedMsg.getMsgType()==4|| receivedMsg.getMsgType()==12 || receivedMsg.getMsgType()==141){
                     	//case 2: When Message Type is 1
                         //i.e Now I have received the Read Yes,
                     	//NodeID-OperationNumber-FileName-Operation
@@ -88,6 +88,8 @@ public class Receiver implements Runnable {
                     }else if(receivedMsg.getMsgType()==14){
                     	//case 4:Type 14, write the copy received into ur file system.
                     	writeLatestIntoLocal(receivedMsg);
+                    	Message tosend=receivedMsg.WriteLatestIntoLocalReply();
+        				DFSMain.sendQueue.add(tosend);
                     }else if(receivedMsg.getMsgType()==15){
                     	 //case 5:Type 15, Write Release Lock
                     	writeReleaseLock(receivedMsg);
