@@ -13,15 +13,18 @@ import com.utd.dfs.statustrackers.StatusReadWriteQuorumRequest;
 public class ReadWrite extends Thread{
 	FileMessage mess;
 	String logFile;
+	String logFileM;
 	public ReadWrite(FileMessage mess) {
 		super();
 		this.mess = mess;
 		logFile=Constants.LOGFILERWTHREAD+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
+		logFileM=Constants.LOGFILEMAIN+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 	}
 	
 	public void run(){
 		FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file);
 		if(mess.operation.equals("R")){//read operation
+			FileFeatures.appendText(logFileM, "Trying Read Operation"+mess.line_index+mess.file);
 			if(FileSystem.getStatus(mess.file)){// check for lock
 				FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"Inside ReadLock");
 				FileSystem.lock(mess.file, "R");// if not lock acquire lock
@@ -51,12 +54,14 @@ public class ReadWrite extends Thread{
 							System.out.println("File Read"+data);
 							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.put(mess.file, "Complete");
+							FileFeatures.appendText(logFileM, "Read Operation COMPLETE"+mess.line_index+mess.file);
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION COMPLETE");	
 							}else{
 							//Call the nodes for release locks.
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
 							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
+							FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION FAILED");
 							return;
 						}
@@ -69,12 +74,15 @@ public class ReadWrite extends Thread{
 			}
 			else{
 				System.out.println("file is locked. Unable to do the read operation "+mess.file);
+				FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
 				FileSystem.map_filestatus.remove(mess.file);
 				return;
 			}
 		
 		}
 		else{//Write operation
+			FileFeatures.appendText(logFileM, "Trying WRITE Operation"+mess.line_index+mess.file);
+			
 			if(FileSystem.getStatus(mess.file)){// check for lock
 				FileSystem.lock(mess.file, "W");// if not lock acquire lock
 				//call the broadcast class
@@ -106,11 +114,13 @@ public class ReadWrite extends Thread{
 								FileSystem.setVersionForFile(mess.file, FileSystem.getVersionForFile(mess.file));
 								FileSystem.map_filestatus.put(mess.file, "Complete");
 								System.out.println("File Write Complete");
+								FileFeatures.appendText(logFileM, "WRITE Operation COMPLETE"+mess.line_index+mess.file);
 								
 							}else{//if one of them fails.
 								FileSystem.releaseWriteLock(mess.file);
 								FileSystem.restorePreviousVersion(mess.file);
 								FileSystem.map_filestatus.remove(mess.file);
+								FileFeatures.appendText(logFileM, " WRITE FAILED"+mess.line_index+mess.file);
 								//FileFeatures.bup()//
 							}
 							
@@ -118,6 +128,7 @@ public class ReadWrite extends Thread{
 							DFSCommunicator.MulticastRequestForWriteLockRelease(mess.file,NodesYes,"Release");
 							FileSystem.releaseWriteLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
+							FileFeatures.appendText(logFileM, " WRITE Operation"+mess.line_index+mess.file);
 							return;
 						}
 					} catch (InterruptedException e) {
