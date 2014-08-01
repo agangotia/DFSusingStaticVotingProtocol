@@ -70,7 +70,9 @@ public  abstract class Status {
 
 	public void addReply(Message m){
 		repliesBucket.put(m.getSenderNodeID(),m);
-		System.out.println("Add Reply called");
+		System.out.println("Replies received From"+m.getSenderNodeID());
+		System.out.println("Replies received "+repliesBucket.size());
+		System.out.println("Replies expecting "+expectedReplies);
 		synchronized(o){
 			if(repliesBucket.size()==expectedReplies || this.returnDecision()==true){
 			//if(repliesBucket.size()==expectedReplies ){

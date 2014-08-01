@@ -31,17 +31,21 @@ public class ProcessFileQueues {
 						//System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
 						if(!FileSystem.map_filestatus.containsKey(message.file)) {
 							//					rw.proceess_input(message);
+												System.out.println("**********8trying againg");
 												FileSystem.map_filestatus.put(message.file, "Pending");
 												Thread readWrite=new Thread(new ReadWrite(message),"RWThread"+i);
 												readWrite.start();
 											}
 					
-											if(FileSystem.map_filestatus.get(message.file).equals("complete")){
-												q[i].poll();
-												//message=q[i].peek();
-												//FileSystem.map_filestatus.remove(message.file);
-											//	rw.proceess_input(message);
-											}
+						if(FileSystem.map_filestatus.get(message.file)!=null){
+							if(FileSystem.map_filestatus.get(message.file).equals("complete")){
+								q[i].poll();
+								//message=q[i].peek();
+								//FileSystem.map_filestatus.remove(message.file);
+							//	rw.proceess_input(message);
+							}
+						}
+											
 					}else{
 						q[i].poll();
 					}

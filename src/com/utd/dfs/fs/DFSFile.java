@@ -80,7 +80,7 @@ public class DFSFile {
 	public synchronized void append(String data){
 	//	rwl.writeLock().lock();
 		FileFeatures.appendText(path, data);
-		this.data+=data;
+		this.data+="\n"+data;
 		
 	}
 	

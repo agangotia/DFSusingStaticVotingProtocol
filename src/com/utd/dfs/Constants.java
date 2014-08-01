@@ -23,6 +23,7 @@ public interface Constants {
 	String LOGFILEEND=".log";
 	String LOGFILERCVR="log"+FILESEPARATOR+"logReceiverNode";
 	String LOGFILEMAIN="log"+FILESEPARATOR+"logMAIN";
+	String logFileRWThread="log"+FILESEPARATOR+"logThreads";
 	
 	boolean DISABLEMONITORTHREAD=true;
 	

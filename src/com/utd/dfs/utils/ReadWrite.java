@@ -14,11 +14,14 @@ public class ReadWrite extends Thread{
 	FileMessage mess;
 	String logFile;
 	String logFileM;
+	String logFileRWThread;
 	public ReadWrite(FileMessage mess) {
 		super();
 		this.mess = mess;
 		logFile=Constants.LOGFILERWTHREAD+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 		logFileM=Constants.LOGFILEMAIN+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
+		logFileRWThread=Constants.logFileRWThread+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
+		FileFeatures.appendText(logFileRWThread, "THread Started"+this.getName());
 	}
 	
 	public void run(){
@@ -30,7 +33,7 @@ public class ReadWrite extends Thread{
 				FileSystem.lock(mess.file, "R");// if not lock acquire lock
 			
 				Object o=new Object();
-				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes, 1,o);
+				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes-1, 1,o);
 				
 					//mapKeyIdentifier::NodeID-OperationNumber-FileName-Operation
 					String mapKeyIdentifier=DFSMain.currentNode.getNodeID()+"-"+mess.line_index+"-"+mess.file+"-"+mess.operation;
@@ -97,7 +100,7 @@ public class ReadWrite extends Thread{
 				//Type 10 write broadcast request
 
 				Object o=new Object();
-				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes, 2,o);
+				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes-1, 2,o);
 				
 				
 					//mapKeyIdentifier::NodeID-OperationNumber-FileName-Operation
@@ -161,6 +164,7 @@ public class ReadWrite extends Thread{
 			}
 			
 		}
+		FileFeatures.appendText(logFileRWThread, "THread Terminates"+this.getName());
 	}
 	
 }

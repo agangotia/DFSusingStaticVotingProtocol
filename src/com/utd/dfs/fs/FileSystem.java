@@ -60,7 +60,7 @@ public class FileSystem {
 		while(line!=null){
 				StringTokenizer st = new StringTokenizer(line, ",");
 				String fileName=st.nextToken();
-				String content=st.nextToken()+"\n";
+				String content=st.nextToken();
 		
 				DFSFile file=new DFSFile(fileName, 0, content);
 				fsobject.put(fileName, file);
