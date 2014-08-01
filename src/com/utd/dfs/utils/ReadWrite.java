@@ -156,6 +156,7 @@ public class ReadWrite extends Thread{
 							return;
 						}
 					} catch (InterruptedException e) {
+						FileSystem.releaseWriteLock(mess.file);
 						FileSystem.map_filestatus.remove(mess.file);
 						FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
 						backOff(DFSMain.currentNode.getDelay_fail());

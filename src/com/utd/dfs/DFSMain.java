@@ -216,7 +216,7 @@ public class DFSMain {
 					//3.PORT NO
 					int portNumber=Integer.parseInt((String) st.nextElement());	
 					//4.DELAYFAIL 
-					long delayFail=Long.parseLong((String) st.nextElement());	
+					long delayFail=Long.parseLong((String) st.nextElement(),10);	
 					//5.MYVOTES 
 					int myVotes=Integer.parseInt((String) st.nextElement());
 					//6.TOTALVOTES
