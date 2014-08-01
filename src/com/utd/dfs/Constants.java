@@ -10,7 +10,7 @@ public interface Constants {
 	boolean TESTSENDERRECEIVER=false;
 	int SIZESENDQ=100;
 	int SIZESRECVQ=100;
-	Long timeOut=20000L;
+	Long timeOut=200L;
 	
 	
 	//for File System

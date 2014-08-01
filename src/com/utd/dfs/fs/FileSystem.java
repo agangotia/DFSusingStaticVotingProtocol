@@ -111,6 +111,7 @@ public class FileSystem {
 		return file_obj.cacheddata;
 	}
 	public static void checkout(Status foc,String mapKeyIdentifier){
+		System.out.println("Hulla ++"+foc.getMaxVersionNodeId());
 		if(DFSMain.currentNode.getNodeID()!=foc.getMaxVersionNodeId()){
 			//get the latest version from node.. call function in consistency manager class
 			int version=foc.getMaxVersionNodeId();

@@ -35,7 +35,7 @@ public class ConfigurationFile {
 			int opr_index=opr_select.nextInt();
 			if(opr_index<70){//perform read operation
 				if(read_ops>0){//check if read operations left is greater than 0 perform read else do write
-					FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" R");
+					//FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" R");
 					read_ops=read_ops-1;
 				}
 				else{//generate random text to write
@@ -43,7 +43,7 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" W "+ sb.toString());
+					//FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
@@ -54,12 +54,12 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					FileFeatures.appendText("config_file",line_index+" "+ nodeId+" "+file_name+" W "+ sb.toString());
+					//FileFeatures.appendText("config_file",line_index+" "+ nodeId+" "+file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
 				else{
-					FileFeatures.appendText("config_file", line_index+" "+ nodeId+" "+file_name+" R");
+					//FileFeatures.appendText("config_file", line_index+" "+ nodeId+" "+file_name+" R");
 					read_ops=read_ops-1;
 				}
 			}
@@ -78,14 +78,15 @@ public class ConfigurationFile {
 				String line= fread.nextLine();
 				String[] linesplit= line.split(" ");
 				Integer line_index=Integer.parseInt(linesplit[0]);
+				int nodeIdLocal=Integer.parseInt(linesplit[1]);
 				Integer queue_index= Integer.parseInt(linesplit[2].substring(4,5));
 				filesContentsList.add(linesplit[2]);
 				if(linesplit.length>4){
-					message=new FileMessage(line_index,nodeId,linesplit[2],linesplit[3],linesplit[4]);
+					message=new FileMessage(line_index,nodeIdLocal,linesplit[2],linesplit[3],linesplit[4]);
 					FileSystem.fsobject.put(linesplit[2], new DFSFile(linesplit[2],0,linesplit[4]));
 				}
 				else{
-					message= new FileMessage(line_index,nodeId,linesplit[2],linesplit[3],null);	
+					message= new FileMessage(line_index,nodeIdLocal,linesplit[2],linesplit[3],null);	
 				}
 				System.out.println("3"+message);
 				System.out.println("4"+file_queue);

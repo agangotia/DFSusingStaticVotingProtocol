@@ -3,6 +3,8 @@ package com.utd.dfs.utils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
+
+import com.utd.dfs.DFSMain;
 import com.utd.dfs.fs.*;
 
 public class ProcessFileQueues {
@@ -18,30 +20,36 @@ public class ProcessFileQueues {
 	public static void process_queue(Queue<FileMessage> q[]){
 		
 		//to be completed........................ based on readwrite class..........
-		while(true){
+		while(true ){
 			int exit_flag=1;
 			for(int i=0; i<q.length;i++){
 				if(!q[i].isEmpty()){
 					FileMessage message=q[i].peek();
-					if(!FileSystem.map_filestatus.containsKey(message.file)) {
-	//					rw.proceess_input(message);
-						FileSystem.map_filestatus.put(message.file, "Pending");
-						Thread readWrite=new Thread(new ReadWrite(message));
-						readWrite.start();
-					}
-					if(FileSystem.map_filestatus.get(message.file).equals("complete")){
+					if(message.node_id==DFSMain.currentNode.getNodeID()){
+						System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
+						if(!FileSystem.map_filestatus.containsKey(message.file)) {
+							//					rw.proceess_input(message);
+												FileSystem.map_filestatus.put(message.file, "Pending");
+												Thread readWrite=new Thread(new ReadWrite(message));
+												readWrite.start();
+											}
+											if(FileSystem.map_filestatus.get(message.file).equals("complete")){
+												q[i].poll();
+												message=q[i].peek();
+												FileSystem.map_filestatus.remove(message.file);
+											//	rw.proceess_input(message);
+											}
+					}else{
 						q[i].poll();
-						message=q[i].peek();
-						FileSystem.map_filestatus.remove(message.file);
-					//	rw.proceess_input(message);
 					}
+					
 				}
 				else{
 					exit_flag=0;
 				}
 				
 			}
-			if(exit_flag==1){
+			if(exit_flag==0){
 				System.out.println("-----------------------------------------------");
 				System.out.println("--------D   O     N     E    ------------------------");
 				break;

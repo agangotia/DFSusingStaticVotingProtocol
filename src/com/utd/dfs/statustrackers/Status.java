@@ -70,8 +70,11 @@ public  abstract class Status {
 
 	public void addReply(Message m){
 		repliesBucket.put(m.getSenderNodeID(),m);
+		System.out.println("Add Reply called");
 		synchronized(o){
 			if(repliesBucket.size()==expectedReplies || this.returnDecision()==true){
+			//if(repliesBucket.size()==expectedReplies ){
+				System.out.println("Notified RW Thread.This will remove the status object from map");
 				o.notify();
 			}
 		}	

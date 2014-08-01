@@ -67,8 +67,10 @@ public class Receiver implements Runnable {
                     	if(obj!=null)
                     		obj.addReply(receivedMsg);
                     	else{
-                    		System.out.println("Unexpected Can't get the Status Object in Map for file name"+receivedMsg.getFileName());
-                    		FileFeatures.appendText(logFile, "Unexpected Can't get the Status Object in Map for file name"+receivedMsg.getFileName());
+                    		System.out.println("Unexpected Can't get the Status Object in Map for file name"+receivedMsg.getMapKeyIdentifier());
+                    		System.out.println("Printing Map \n"+printMap());
+                    		
+                    		FileFeatures.appendText(logFile, "Unexpected Can't get the Status Object in Map for file name"+receivedMsg.getMapKeyIdentifier());
                     		FileFeatures.appendText(logFile, "Printing Map \n"+printMap());
                     		
                     	}
@@ -81,7 +83,7 @@ public class Receiver implements Runnable {
                     	
                     }else if(receivedMsg.getMsgType()==5){
                     	//case 3: Unlock ur Read Copy Message TYpe 5  
-                    	sendLatestFromLocal(receivedMsg);
+                    	FileSystem.releaseReadLock(receivedMsg.getFileName());
                     	
                     }else if(receivedMsg.getMsgType()==14){
                     	//case 4:Type 14, write the copy received into ur file system.
@@ -168,8 +170,11 @@ public class Receiver implements Runnable {
 			
 			public String printMap(){
 				StringBuffer data=new StringBuffer();
+				if(DFSCommunicator.mapFileStatus.size()==0){
+					return "Unfortunately!! Map is empty.... ";
+				}
 				for(String key:DFSCommunicator.mapFileStatus.keySet()){
-					data.append("Key :"+key+"=>"+"Value :"+DFSCommunicator.mapFileStatus.get(key));
+					data.append("Key :"+key+"=>"+"Value :"+DFSCommunicator.mapFileStatus.get(key).getClass().getName());
 				}
 				return data.toString();
 			}
