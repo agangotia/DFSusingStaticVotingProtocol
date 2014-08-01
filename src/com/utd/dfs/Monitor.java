@@ -17,6 +17,8 @@ public class Monitor implements Runnable {
 						Object lock=o.getO();
 						if(lock!=null){
 							synchronized (lock) {
+								System.out.println("**********************************************");
+								System.out.println("Monitor calling Notify.. You should avoid such situations.");
 								if(System.currentTimeMillis()-o.getWaitStart()>Constants.timeOut)
 									lock.notify();
 							}
@@ -30,7 +32,7 @@ public class Monitor implements Runnable {
 				}
 			}
 			try {
-				Thread.sleep((1l/3)*Constants.timeOut);
+				Thread.sleep(Constants.timeOut);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

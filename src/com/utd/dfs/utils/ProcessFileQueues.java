@@ -24,15 +24,15 @@ public class ProcessFileQueues {
 			int exit_flag=1;
 			for(int i=0; i<q.length;i++){
 				if(!q[i].isEmpty()){
-					System.out.println("Index--"+i+"::Queue size---"+q[i].size());
+					//System.out.println("Index--"+i+"::Queue size---"+q[i].size());
 					exit_flag=0;
 					FileMessage message=q[i].peek();
 					if(message.node_id==DFSMain.currentNode.getNodeID()){
-						System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
+						//System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
 						if(!FileSystem.map_filestatus.containsKey(message.file)) {
 							//					rw.proceess_input(message);
 												FileSystem.map_filestatus.put(message.file, "Pending");
-												Thread readWrite=new Thread(new ReadWrite(message));
+												Thread readWrite=new Thread(new ReadWrite(message),"RWThread"+i);
 												readWrite.start();
 											}
 					

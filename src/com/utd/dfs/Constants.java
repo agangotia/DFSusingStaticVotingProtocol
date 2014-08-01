@@ -10,7 +10,7 @@ public interface Constants {
 	boolean TESTSENDERRECEIVER=false;
 	int SIZESENDQ=100;
 	int SIZESRECVQ=100;
-	Long timeOut=200L;
+	Long timeOut=2000L;
 	
 	
 	//for File System
@@ -23,4 +23,7 @@ public interface Constants {
 	String LOGFILEEND=".log";
 	String LOGFILERCVR="log"+FILESEPARATOR+"logReceiverNode";
 	String LOGFILEMAIN="log"+FILESEPARATOR+"logMAIN";
+	
+	boolean DISABLEMONITORTHREAD=true;
+	
 }
