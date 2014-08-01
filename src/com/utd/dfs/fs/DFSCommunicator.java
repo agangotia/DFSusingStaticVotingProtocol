@@ -35,12 +35,13 @@ public class DFSCommunicator {
 	/**
 	 * Function : Broadcast All nodes, asking for votes for a read operation.
 	 */
-	public static void broadcastReadRequestForVotes(String fileName,Status o){
-		mapFileStatus.put(fileName, o);
+	public static void broadcastReadRequestForVotes(String fileName,Status o,String mapKeyIdentifier){
+
+		mapFileStatus.put(mapKeyIdentifier, o);
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
-						0, "", fileName);
+						0, "", fileName,mapKeyIdentifier);
 				DFSMain.sendQueue.add(m);
 			}
 		    
@@ -50,12 +51,12 @@ public class DFSCommunicator {
 	/**
 	 * Function : Broadcast All nodes, asking for votes for a write operation.
 	 */
-	public static void broadcastWriteRequestForVotes(String fileName,Status o){
-		mapFileStatus.put(fileName, o);
+	public static void broadcastWriteRequestForVotes(String fileName,Status o,String mapKeyIdentifier){
+		mapFileStatus.put(mapKeyIdentifier, o);
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
-						10, "", fileName);
+						10, "", fileName,mapKeyIdentifier);
 				DFSMain.sendQueue.add(m);
 			}
 		    
@@ -65,21 +66,21 @@ public class DFSCommunicator {
 	/**
 	 * Function : Unicast to get the reply
 	 */
-	public static void unicastGetlatestForRead(int nodeId, String fileName,Status o){
-		mapFileStatus.put(fileName, o);
+	public static void unicastGetlatestForRead(int nodeId, String fileName,Status o,String mapKeyIdentifier){
+		mapFileStatus.put(mapKeyIdentifier, o);
 		Message m=new Message("0", DFSMain.currentNode.getNodeID(), nodeId,
-				3, "", fileName);
+				3, "", fileName,mapKeyIdentifier);
 		DFSMain.sendQueue.add(m);
 	}
 	
 	/**
 	 * Function : Multicast All nodes, asking for read Lock Release.
 	 */
-	public static void MulticastRequestForReadLockRelease(String fileName,ArrayList<Integer> Nodes){
+	public static void MulticastRequestForReadLockRelease(String fileName,ArrayList<Integer> Nodes,String mapKeyIdentifier){
 		for (Integer key : Nodes) {
 		
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), key,
-						5, "", fileName);
+						5, "", fileName,mapKeyIdentifier);
 				DFSMain.sendQueue.add(m);
 		    
 		}
@@ -89,11 +90,11 @@ public class DFSCommunicator {
 	/**
 	 * Function : Multicast All nodes, asking for write Lock Release.
 	 */
-	public static void MulticastRequestForWriteLockRelease(String fileName,ArrayList<Integer> Nodes,String opcode){
+	public static void MulticastRequestForWriteLockRelease(String fileName,ArrayList<Integer> Nodes,String opcode,String mapKeyIdentifier){
 		for (Integer key : Nodes) {
 		
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), key,
-						15, opcode, fileName);
+						15, opcode, fileName,mapKeyIdentifier);
 				DFSMain.sendQueue.add(m);
 		    
 		}
@@ -102,14 +103,14 @@ public class DFSCommunicator {
 	/**
 	 * Function : Multicast All nodes, with data and version to uodate their copy
 	 */
-	public static boolean MulticastRequestForWriteUpdate(String fileName,ArrayList<Integer> Nodes,String data,int version){
+	public static boolean MulticastRequestForWriteUpdate(String fileName,ArrayList<Integer> Nodes,String data,int version,String mapKeyIdentifier){
 		Object o2=new Object();
 		Status objStatus2=new StatusFileWriteReplies(fileName, Nodes.size(), o2); 
-		mapFileStatus.put(fileName, objStatus2);
+		mapFileStatus.put(mapKeyIdentifier, objStatus2);
 		for (Integer key : Nodes) {
 			
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), key,
-						14, data, fileName,version);
+						14, data, fileName,version,mapKeyIdentifier);
 				DFSMain.sendQueue.add(m);
 
 		    
@@ -120,10 +121,10 @@ public class DFSCommunicator {
 				mapFileStatus.remove(fileName);
 				// all nodes were able to update the changes
 				if(objStatus2.returnDecision()){
-					MulticastRequestForWriteLockRelease(fileName,Nodes,"Release");
+					MulticastRequestForWriteLockRelease(fileName,Nodes,"Release",mapKeyIdentifier);
 					return true;
 				}else{
-					MulticastRequestForWriteLockRelease(fileName,Nodes,"RollBack");
+					MulticastRequestForWriteLockRelease(fileName,Nodes,"RollBack",mapKeyIdentifier);
 					return false;
 				}
 						

@@ -31,7 +31,12 @@ public class ReadWrite extends Thread{
 			
 				Object o=new Object();
 				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes, 1,o);
-				DFSCommunicator.broadcastReadRequestForVotes(mess.file,objStatus);
+				
+					//mapKeyIdentifier::NodeID-OperationNumber-FileName-Operation
+					String mapKeyIdentifier=DFSMain.currentNode.getNodeID()+"-"+mess.line_index+"-"+mess.file+"-"+mess.operation;
+					DFSCommunicator.broadcastReadRequestForVotes(mess.file,objStatus,mapKeyIdentifier);
+				
+				
 				FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"Broadcast Request Sent");
 				synchronized(o){
 					try {
@@ -44,11 +49,14 @@ public class ReadWrite extends Thread{
 						if(objStatus.returnDecision()){//once has the majority
 							
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MAJORITY FOR READ");
-							FileSystem.checkout(objStatus);
+							
+								FileSystem.checkout(objStatus,mapKeyIdentifier);
+							
+							
 							//Do the Broadcast for Read Lock Release to quorum
 							//Type 5 read broadcast lock release
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MULTICAST LOCK RELEASE");
-							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
+							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes,mapKeyIdentifier);
 							
 							String data=FileSystem.read(mess.file);
 							System.out.println("File Read"+data);
@@ -58,7 +66,7 @@ public class ReadWrite extends Thread{
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION COMPLETE");	
 							}else{
 							//Call the nodes for release locks.
-							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes);
+							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes,mapKeyIdentifier);
 							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
 							FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
@@ -90,7 +98,11 @@ public class ReadWrite extends Thread{
 
 				Object o=new Object();
 				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes, 2,o);
-				DFSCommunicator.broadcastWriteRequestForVotes(mess.file,objStatus);
+				
+				
+					//mapKeyIdentifier::NodeID-OperationNumber-FileName-Operation
+					String mapKeyIdentifier=DFSMain.currentNode.getNodeID()+"-"+mess.line_index+"-"+mess.file+"-"+mess.operation;
+					DFSCommunicator.broadcastWriteRequestForVotes(mess.file,objStatus,mapKeyIdentifier);
 				
 				synchronized(o){
 					try {
@@ -100,13 +112,17 @@ public class ReadWrite extends Thread{
 						DFSCommunicator.mapFileStatus.remove(mess.file);
 						if(objStatus.returnDecision()){//once has the majority
 							FileSystem.bup(mess.file);
-							FileSystem.checkout(objStatus);
+							
+							FileSystem.checkout(objStatus,mapKeyIdentifier);
+							
+							
 							FileSystem.write(mess.file, mess.content);
 							//Pass on to Consistency Manager to publish the changes to Quorum.
 							//Synchronized on map object inside consistency manager and wait
 							//till u notify
 							
-							boolean result=DFSCommunicator.MulticastRequestForWriteUpdate(mess.file, NodesYes, FileSystem.read(mess.file), FileSystem.fsobject.get(mess.file).getFile_version());
+							
+							boolean result=DFSCommunicator.MulticastRequestForWriteUpdate(mess.file, NodesYes, FileSystem.read(mess.file), FileSystem.fsobject.get(mess.file).getFile_version(),mapKeyIdentifier);
 							
 							if(result){// all nodes were able to update the changes
 								//Again a Broadcast to release the locks.
@@ -125,7 +141,7 @@ public class ReadWrite extends Thread{
 							}
 							
 						}else{
-							DFSCommunicator.MulticastRequestForWriteLockRelease(mess.file,NodesYes,"Release");
+							DFSCommunicator.MulticastRequestForWriteLockRelease(mess.file,NodesYes,"Release",mapKeyIdentifier);
 							FileSystem.releaseWriteLock(mess.file);
 							FileSystem.map_filestatus.remove(mess.file);
 							FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);

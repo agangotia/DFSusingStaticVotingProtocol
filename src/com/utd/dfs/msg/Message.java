@@ -31,8 +31,15 @@ public class Message implements Serializable {
 
 	private String messageId;
 
+	private String mapKeyIdentifier;
 
 
+	public String getMapKeyIdentifier() {
+		return mapKeyIdentifier;
+	}
+	public void setMapKeyIdentifier(String mapKeyIdentifier) {
+		this.mapKeyIdentifier = mapKeyIdentifier;
+	}
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
 			int msgType, String data, String fileName, int fileVersion) {
 		super();
@@ -43,6 +50,18 @@ public class Message implements Serializable {
 		this.data = data;
 		this.fileName = fileName;
 		this.fileVersion = fileVersion;
+	}
+	public Message(String messageId, int senderNodeID, int recipientNodeID,
+			int msgType, String data, String fileName, int fileVersion,String mapKeyIdentifier) {
+		super();
+		this.messageId = messageId;
+		this.senderNodeID = senderNodeID;
+		this.recipientNodeID = recipientNodeID;
+		this.msgType = msgType;
+		this.data = data;
+		this.fileName = fileName;
+		this.fileVersion = fileVersion;
+		this.mapKeyIdentifier=mapKeyIdentifier;
 	}
 	private int senderNodeID;
 	private int recipientNodeID;
@@ -58,6 +77,17 @@ public class Message implements Serializable {
 
 	public Message(){
 
+	}
+	public Message(String messageId, int senderNodeID, int recipientNodeID,
+			int msgType, String data, String fileName,String mapKeyIdentifier) {
+		super();
+		this.messageId = messageId;
+		this.senderNodeID = senderNodeID;
+		this.recipientNodeID = recipientNodeID;
+		this.msgType = msgType;
+		this.data = data;
+		this.fileName = fileName;
+		this.mapKeyIdentifier=mapKeyIdentifier;
 	}
 	public Message(String messageId, int senderNodeID, int recipientNodeID,
 			int msgType, String data, String fileName) {
@@ -183,25 +213,25 @@ public class Message implements Serializable {
 	}
 
 	public Message getReadMessageQuorumReplyTrue(int weight,int version){
-		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 1, weight+"", fileName,version);
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 1, weight+"", fileName,version,mapKeyIdentifier);
 		return msg;
 	}
 	public Message getReadMessageQuorumReplyFalse(){
-		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 2, 0+"", fileName);
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 2, 0+"", fileName,mapKeyIdentifier);
 		return msg;
 	}
 
 	public Message getWriteMessageQuorumReplyTrue(int weight,int version){
-		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 11, weight+"", fileName,version);
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 11, weight+"", fileName,version,mapKeyIdentifier);
 		return msg;
 	}
 	public Message getWriteMessageQuorumReplyFalse(){
-		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 12, 0+"", fileName);
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 12, 0+"", fileName,mapKeyIdentifier);
 		return msg;
 	}
 
 	public Message sendLatestLocalCopy(String data,int version){
-		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 4, data, fileName,version);
+		Message msg=new Message(messageId, recipientNodeID, senderNodeID, 4, data, fileName,version,mapKeyIdentifier);
 		return msg;
 	}
 }

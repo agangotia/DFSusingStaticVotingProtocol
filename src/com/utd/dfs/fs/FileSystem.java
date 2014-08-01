@@ -110,14 +110,16 @@ public class FileSystem {
 		DFSFile file_obj= fsobject.get(filename);
 		return file_obj.cacheddata;
 	}
-	public static void checkout(Status foc){
+	public static void checkout(Status foc,String mapKeyIdentifier){
 		if(DFSMain.currentNode.getNodeID()!=foc.getMaxVersionNodeId()){
 			//get the latest version from node.. call function in consistency manager class
 			int version=foc.getMaxVersionNodeId();
 			
 			Object o=new Object();
 			Status objStatus=new StatusGetFile(foc.getFileName(),o);
-			DFSCommunicator.unicastGetlatestForRead(foc.getMaxVersionNodeId(), foc.getFileName(),objStatus);
+			DFSCommunicator.mapFileStatus.put(mapKeyIdentifier, objStatus);
+	
+			DFSCommunicator.unicastGetlatestForRead(foc.getMaxVersionNodeId(), foc.getFileName(),objStatus,mapKeyIdentifier);
 			synchronized(o){
 				try {
 					o.wait();

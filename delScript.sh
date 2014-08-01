@@ -9,7 +9,7 @@ echo "Script started"
 rm -R log/*
 #Clear the filesystem
 rm -r fs/1/*
-rm -r /fs/2/*
+rm -r fs/2/*
 #Clear the config_file
 rm -r config_file
 

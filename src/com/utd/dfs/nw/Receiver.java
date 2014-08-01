@@ -62,7 +62,8 @@ public class Receiver implements Runnable {
                     }else if(receivedMsg.getMsgType()==1 || receivedMsg.getMsgType()==11 || receivedMsg.getMsgType()==2 || receivedMsg.getMsgType()==4|| receivedMsg.getMsgType()==12){
                     	//case 2: When Message Type is 1
                         //i.e Now I have received the Read Yes,
-                    	Status obj=DFSCommunicator.mapFileStatus.get(receivedMsg.getFileName());
+                    	//NodeID-OperationNumber-FileName-Operation
+                    	Status obj=DFSCommunicator.mapFileStatus.get(receivedMsg.getMapKeyIdentifier());
                     	if(obj!=null)
                     		obj.addReply(receivedMsg);
                     	else{

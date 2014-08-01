@@ -5,8 +5,6 @@
  
 echo "Script started"
 
-DIRDST=$HOME"/AosProjectDemo/DemoLocal2Nodes/Project2"
-
 #Clear the log
 rm -R log/*
 #Clear the filesystem

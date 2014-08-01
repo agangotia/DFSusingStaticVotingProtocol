@@ -7,19 +7,19 @@ DIRDST=$HOME"/AosProjectDemo/DemoLocal2Nodes/Project2"
 DIRSRC=$HOME"/Workspace_AOS/Project2.git"
 
 #Clear the bin
-rm -r $DIRDST"/bin"
+rm -R bin/*
 #Clear the source
-rm -r $DIRDST"/src"
+rm -R src/*
 #Clear the build.xml
-rm -r $DIRDST"build.xml"
+rm -r build.xml
 #Clear the log
-rm -r $DIRDST"/log/*"
+rm -R log/*
 #Clear the filesystem
-rm -r $DIRDST"/fs/1/*"
-rm -r $DIRDST"/fs/2/*"
-
+rm -r fs/1/*
+rm -r /fs/2/*
+#Clear the config_file
+rm -r config_file
 cp -r $DIRSRC"/src" $DIRDST
 cp -r $DIRSRC"/build.xml" $DIRDST
-echo "Copying successfull for "$DIRDST"/"process
 
 echo "Script completed"
