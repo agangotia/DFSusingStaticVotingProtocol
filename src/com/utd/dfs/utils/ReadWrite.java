@@ -61,7 +61,7 @@ public class ReadWrite extends Thread{
 							String data=FileSystem.read(mess.file);
 							System.out.println("File Read"+data);
 							FileSystem.releaseReadLock(mess.file);
-							FileSystem.map_filestatus.put(mess.file, "Complete");
+							FileSystem.map_filestatus.put(mess.file, "complete");
 							FileFeatures.appendText(logFileM, "Read Operation COMPLETE"+mess.line_index+mess.file);
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION COMPLETE");	
 							}else{
@@ -128,7 +128,7 @@ public class ReadWrite extends Thread{
 								//Again a Broadcast to release the locks.
 								FileSystem.releaseWriteLock(mess.file);
 								FileSystem.setVersionForFile(mess.file, FileSystem.getVersionForFile(mess.file));
-								FileSystem.map_filestatus.put(mess.file, "Complete");
+								FileSystem.map_filestatus.put(mess.file, "complete");
 								System.out.println("File Write Complete");
 								FileFeatures.appendText(logFileM, "WRITE Operation COMPLETE"+mess.line_index+mess.file);
 								

@@ -90,7 +90,9 @@ public class ConfigurationFile {
 				}
 				System.out.println("3"+message);
 				System.out.println("4"+file_queue);
-				file_queue[queue_index].add(message);
+				if(nodeIdLocal==nodeId){
+					file_queue[queue_index].add(message);
+				}
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -118,4 +120,4 @@ public class ConfigurationFile {
 			e.printStackTrace();
 		}
 	}
-*/}
+	 */}

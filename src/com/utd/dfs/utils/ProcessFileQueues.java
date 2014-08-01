@@ -24,6 +24,8 @@ public class ProcessFileQueues {
 			int exit_flag=1;
 			for(int i=0; i<q.length;i++){
 				if(!q[i].isEmpty()){
+					System.out.println("Index--"+i+"::Queue size---"+q[i].size());
+					exit_flag=0;
 					FileMessage message=q[i].peek();
 					if(message.node_id==DFSMain.currentNode.getNodeID()){
 						System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
@@ -33,10 +35,11 @@ public class ProcessFileQueues {
 												Thread readWrite=new Thread(new ReadWrite(message));
 												readWrite.start();
 											}
+					
 											if(FileSystem.map_filestatus.get(message.file).equals("complete")){
 												q[i].poll();
-												message=q[i].peek();
-												FileSystem.map_filestatus.remove(message.file);
+												//message=q[i].peek();
+												//FileSystem.map_filestatus.remove(message.file);
 											//	rw.proceess_input(message);
 											}
 					}else{
@@ -44,12 +47,9 @@ public class ProcessFileQueues {
 					}
 					
 				}
-				else{
-					exit_flag=0;
-				}
 				
 			}
-			if(exit_flag==0){
+			if(exit_flag==1){
 				System.out.println("-----------------------------------------------");
 				System.out.println("--------D   O     N     E    ------------------------");
 				break;
