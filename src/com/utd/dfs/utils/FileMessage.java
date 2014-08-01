@@ -5,12 +5,13 @@ public class FileMessage {
 	String content=null;
 	String file=null;
 	int line_index=0;
-	public FileMessage(int line_index,String file, String operation, String content) {
+	int node_id=0;
+	public FileMessage(int line_index,int nodeId,String file, String operation, String content) {
 		this.operation=operation;
 		this.content=content;
 		this.file=file;
 		this.line_index=line_index;
-		
+		this.node_id=nodeId;
 	}
 		public FileMessage(int line_index,String operation, String content) {
 		this.operation=operation;

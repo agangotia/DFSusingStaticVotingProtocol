@@ -12,11 +12,12 @@ import java.util.Set;
 
 
 
+import com.utd.dfs.DFSMain;
 import com.utd.dfs.fs.DFSFile;
 import com.utd.dfs.fs.FileSystem;
 
 public class ConfigurationFile {
-
+	public static int nodeId= DFSMain.currentNode.getNodeID();
 	public static Set<String> filesContentsList= new HashSet<String>();
 	public static void generate_cffile(int operations_count,int file_minindex, int file_maxindex){
 		int remaining_ops=operations_count;
@@ -34,7 +35,7 @@ public class ConfigurationFile {
 			int opr_index=opr_select.nextInt();
 			if(opr_index<70){//perform read operation
 				if(read_ops>0){//check if read operations left is greater than 0 perform read else do write
-					FileFeatures.appendText("config_file",line_index+" "+ file_name+" R");
+					FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" R");
 					read_ops=read_ops-1;
 				}
 				else{//generate random text to write
@@ -42,7 +43,7 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					FileFeatures.appendText("config_file",line_index+" "+ file_name+" W "+ sb.toString());
+					FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
@@ -53,12 +54,12 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					FileFeatures.appendText("config_file",line_index+" "+ file_name+" W "+ sb.toString());
+					FileFeatures.appendText("config_file",line_index+" "+ nodeId+" "+file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
 				else{
-					FileFeatures.appendText("config_file", line_index+" "+file_name+" R");
+					FileFeatures.appendText("config_file", line_index+" "+ nodeId+" "+file_name+" R");
 					read_ops=read_ops-1;
 				}
 			}
@@ -75,19 +76,16 @@ public class ConfigurationFile {
 			Scanner fread= new Scanner(f);
 			while(fread.hasNextLine()){
 				String line= fread.nextLine();
-				System.out.println("1"+line);
 				String[] linesplit= line.split(" ");
 				Integer line_index=Integer.parseInt(linesplit[0]);
-				Integer queue_index= Integer.parseInt(linesplit[1].substring(4,5));
-				System.out.println("2"+queue_index);
-				filesContentsList.add(linesplit[1]);
-				if(linesplit.length>3){
-					message=new FileMessage(line_index,linesplit[1],linesplit[2],linesplit[3]);
-					FileSystem.fsobject.put(linesplit[1], new DFSFile(linesplit[0],0,linesplit[2]));
+				Integer queue_index= Integer.parseInt(linesplit[2].substring(4,5));
+				filesContentsList.add(linesplit[2]);
+				if(linesplit.length>4){
+					message=new FileMessage(line_index,nodeId,linesplit[2],linesplit[3],linesplit[4]);
+					FileSystem.fsobject.put(linesplit[2], new DFSFile(linesplit[2],0,linesplit[4]));
 				}
 				else{
-
-					message= new FileMessage(line_index,linesplit[1],linesplit[2],null);	
+					message= new FileMessage(line_index,nodeId,linesplit[2],linesplit[3],null);	
 				}
 				System.out.println("3"+message);
 				System.out.println("4"+file_queue);
