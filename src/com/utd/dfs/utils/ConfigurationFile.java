@@ -31,7 +31,7 @@ public class ConfigurationFile {
 		Random opr_select= new Random();//randomly select a number between 0 and 100. If the number falls between 0 and 90 then perform read else write
 		while(remaining_ops>0){
 			int file_index=file.nextInt(file_maxindex-file_minindex+1);//generate file index on which we need to perform some operation
-			String file_name="file"+String.valueOf(file_index);
+			String file_name="file"+String.valueOf(file_index)+".txt";
 			int opr_index=opr_select.nextInt();
 			if(opr_index<70){//perform read operation
 				if(read_ops>0){//check if read operations left is greater than 0 perform read else do write
@@ -43,7 +43,7 @@ public class ConfigurationFile {
 						char c = chars[random_string.nextInt(chars.length)];
 						sb.append(c);
 					}
-					//FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" W "+ sb.toString());
+					FileFeatures.appendText("config_file",line_index+" "+nodeId+" "+ file_name+" W "+ sb.toString());
 					sb.delete(0, sb.length());
 					write_ops=write_ops-1;
 				}
@@ -59,7 +59,7 @@ public class ConfigurationFile {
 					write_ops=write_ops-1;
 				}
 				else{
-					//FileFeatures.appendText("config_file", line_index+" "+ nodeId+" "+file_name+" R");
+					FileFeatures.appendText("config_file", line_index+" "+ nodeId+" "+file_name+" R");
 					read_ops=read_ops-1;
 				}
 			}
