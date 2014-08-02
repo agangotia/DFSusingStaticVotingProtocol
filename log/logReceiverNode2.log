@@ -1,6 +1,52 @@
 Receiver Thread Message Received
 *********************************************
 MID-0
+Type-10 ;Write Broadcast Request
+S:-1R:-2
+Content-
+FName-file1.txt FVersion-0
+*********************************************
+
+Receiver Thread Message Received
+*********************************************
+MID-0
+Type-12 ;Write Reply No
+S:-1R:-2
+Content-0
+FName-file1.txt FVersion-0
+*********************************************
+
+Receiver Thread Message Received
+*********************************************
+MID-0
+Type-10 ;Write Broadcast Request
+S:-1R:-2
+Content-
+FName-file1.txt FVersion-0
+*********************************************
+
+Receiver Thread Message Received
+*********************************************
+MID-0
+Type-14 ;write updated copy to quorum
+S:-1R:-2
+Content-"HI ASDabc"
+Node1Changed
+FName-file1.txt FVersion-0
+*********************************************
+
+Receiver Thread Message Received
+*********************************************
+MID-0
+Type-15 ;write Release  Lock
+S:-1R:-2
+Content-Release
+FName-file1.txt FVersion-0
+*********************************************
+
+Receiver Thread Message Received
+*********************************************
+MID-0
 Type-11 ;Write Reply Yes
 S:-1R:-2
 Content-4
@@ -10,9 +56,9 @@ FName-file1.txt FVersion-0
 Receiver Thread Message Received
 *********************************************
 MID-0
-Type-11 ;Write Reply Yes
-S:-3R:-2
-Content-4
+Type-141 ;write updated Reply
+S:-1R:-2
+Content-Updated
 FName-file1.txt FVersion-0
 *********************************************
 

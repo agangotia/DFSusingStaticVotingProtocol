@@ -11,6 +11,6 @@ rm -R log/*
 rm -r fs/1/*
 rm -r fs/2/*
 #Clear the config_file
-rm -r config_file
+#rm -r config_file
 
 echo "Script completed"

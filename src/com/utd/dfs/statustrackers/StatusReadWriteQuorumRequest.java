@@ -22,13 +22,13 @@ public class StatusReadWriteQuorumRequest extends Status {
 	 */
 	private int typeOfRequest;
 	
-	public StatusReadWriteQuorumRequest(int localNodeId,String fileName,int local_version, int expectedReplies, int typeOfRequest,Object o){
+	public StatusReadWriteQuorumRequest(int localNodeId,String fileName,int local_version, int expectedReplies, int typeOfRequest,Object o,int myvotes){
 		super(fileName,expectedReplies,o);
 		this.local_version=local_version;
 		this.local_nodeid=localNodeId;
 		this.maxVersionNodeId=localNodeId;
 		this.typeOfRequest=typeOfRequest;
-		this.votes_acquired=0;
+		this.votes_acquired=myvotes;
 		
 	}
 

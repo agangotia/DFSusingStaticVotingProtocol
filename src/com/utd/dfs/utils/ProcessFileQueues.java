@@ -27,29 +27,26 @@ public class ProcessFileQueues {
 					//System.out.println("Index--"+i+"::Queue size---"+q[i].size());
 					exit_flag=0;
 					FileMessage message=q[i].peek();
-					if(message.node_id==DFSMain.currentNode.getNodeID()){
-						//System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
-						if(!FileSystem.map_filestatus.containsKey(message.file)) {
-							//					rw.proceess_input(message);
-												System.out.println("**********8trying againg");
-												FileSystem.map_filestatus.put(message.file, "Pending");
-												Thread readWrite=new Thread(new ReadWrite(message),"RWThread"+i);
-												readWrite.start();
-											}
 					
-						if(FileSystem.map_filestatus.get(message.file)!=null){
-							if(FileSystem.map_filestatus.get(message.file).equals("complete")){
-								q[i].poll();
-								//message=q[i].peek();
-								//FileSystem.map_filestatus.remove(message.file);
-							//	rw.proceess_input(message);
+						//System.out.println("MY Node"+DFSMain.currentNode.getNodeID()+":: Message Node"+message.node_id);
+						synchronized(FileSystem.map_filestatus){
+							if(!FileSystem.map_filestatus.containsKey(message.file)) {
+								//					rw.proceess_input(message);
+													System.out.println("**********8trying againg");
+													FileSystem.map_filestatus.put(message.file, "Pending");
+													Thread readWrite=new Thread(new ReadWrite(message),"RWThread"+i);
+													readWrite.start();
+												}
+						
+							if(FileSystem.map_filestatus.get(message.file)!=null){
+								if(FileSystem.map_filestatus.get(message.file).equals("complete")){
+									q[i].poll();
+									//message=q[i].peek();
+									FileSystem.map_filestatus.remove(message.file);
+								//	rw.proceess_input(message);
+								}
 							}
 						}
-											
-					}else{
-						q[i].poll();
-					}
-					
 				}
 				
 			}

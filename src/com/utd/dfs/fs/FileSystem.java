@@ -210,4 +210,8 @@ public class FileSystem {
 		file_obj.file_version_old=file_obj.getFile_version();
 		file_obj.setFile_version(version);
 	}
+	
+	public static DFSFile getFileObject(String File){
+		return fsobject.get(File);
+	}
 }

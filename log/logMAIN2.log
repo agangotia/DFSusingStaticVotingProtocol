@@ -1,3 +1,6 @@
-Write Quorum Size:7
-Read Quorum Size:5
+Write Quorum Size:5
+Read Quorum Size:3
 Trying WRITE Operation1file1.txt
+ WRITE Operation Failed1file1.txt
+Trying WRITE Operation1file1.txt
+WRITE Operation COMPLETE1file1.txt

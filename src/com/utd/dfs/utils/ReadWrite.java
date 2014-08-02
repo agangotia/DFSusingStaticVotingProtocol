@@ -33,7 +33,7 @@ public class ReadWrite extends Thread{
 				FileSystem.lock(mess.file, "R");// if not lock acquire lock
 			
 				Object o=new Object();
-				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes-1, 1,o);
+				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes-1, 1,o,DFSMain.currentNode.getMy_votes());
 				
 					//mapKeyIdentifier::NodeID-OperationNumber-FileName-Operation
 					String mapKeyIdentifier=DFSMain.currentNode.getNodeID()+"-"+mess.line_index+"-"+mess.file+"-"+mess.operation;
@@ -71,16 +71,25 @@ public class ReadWrite extends Thread{
 							//Call the nodes for release locks.
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes,mapKeyIdentifier);
 							FileSystem.releaseReadLock(mess.file);
-							FileSystem.map_filestatus.remove(mess.file);
+							System.out.println("GOing to sleep");
+							backOff(DFSMain.currentNode.getDelay_fail());
+							System.out.println("Upfrom  sleep");
+							synchronized(FileSystem.map_filestatus){
+								FileSystem.map_filestatus.remove(mess.file);
+								}
 							FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"FILE READ OPERATION FAILED");
-							backOff(DFSMain.currentNode.getDelay_fail());
+							
 							return;
 						}
 					} catch (InterruptedException e) {
 						e.printStackTrace();
-						FileSystem.map_filestatus.remove(mess.file);
+						System.out.println("GOing to sleep");
 						backOff(DFSMain.currentNode.getDelay_fail());
+						System.out.println("Upfrom  sleep");
+						synchronized(FileSystem.map_filestatus){
+							FileSystem.map_filestatus.remove(mess.file);
+							}
 						return;
 					}
 				}
@@ -88,8 +97,13 @@ public class ReadWrite extends Thread{
 			else{
 				System.out.println("file is locked. Unable to do the read operation "+mess.file);
 				FileFeatures.appendText(logFileM, "Read Operation FAILED"+mess.line_index+mess.file);
-				FileSystem.map_filestatus.remove(mess.file);
+				System.out.println("GOing to sleep");
 				backOff(DFSMain.currentNode.getDelay_fail());
+				System.out.println("Upfrom  sleep");
+				synchronized(FileSystem.map_filestatus){
+					FileSystem.map_filestatus.remove(mess.file);
+					}
+				
 				return;
 			}
 		
@@ -103,7 +117,7 @@ public class ReadWrite extends Thread{
 				//Type 10 write broadcast request
 
 				Object o=new Object();
-				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes-1, 2,o);
+				Status objStatus=new StatusReadWriteQuorumRequest(DFSMain.currentNode.getNodeID(),mess.file,FileSystem.fsobject.get(mess.file).getFile_version(), DFSMain.totalNodes-1, 2,o,DFSMain.currentNode.getMy_votes());
 				
 				
 					//mapKeyIdentifier::NodeID-OperationNumber-FileName-Operation
@@ -117,6 +131,7 @@ public class ReadWrite extends Thread{
 						ArrayList<Integer> NodesYes=objStatus.nodeIdsRepliedyes();
 						DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 						if(objStatus.returnDecision()){//once has the majority
+							System.out.println("GOt the Majority");
 							FileSystem.bup(mess.file);
 							
 							FileSystem.checkout(objStatus,mapKeyIdentifier);
@@ -139,35 +154,57 @@ public class ReadWrite extends Thread{
 								FileFeatures.appendText(logFileM, "WRITE Operation COMPLETE"+mess.line_index+mess.file);
 								
 							}else{//if one of them fails.
+								
 								FileSystem.releaseWriteLock(mess.file);
 								FileSystem.restorePreviousVersion(mess.file);
-								FileSystem.map_filestatus.remove(mess.file);
-								FileFeatures.appendText(logFileM, " WRITE FAILED"+mess.line_index+mess.file);
+								System.out.println("GOing to sleep");
 								backOff(DFSMain.currentNode.getDelay_fail());
+								System.out.println("Upfrom  sleep");
+								synchronized(FileSystem.map_filestatus){
+									FileSystem.map_filestatus.remove(mess.file);
+									}
+								FileFeatures.appendText(logFileM, " WRITE FAILED"+mess.line_index+mess.file);
+							
 								//FileFeatures.bup()//
 							}
 							
 						}else{
+							System.out.println("Unable in gewtting  the Majority");
 							DFSCommunicator.MulticastRequestForWriteLockRelease(mess.file,NodesYes,"Release",mapKeyIdentifier);
 							FileSystem.releaseWriteLock(mess.file);
-							FileSystem.map_filestatus.remove(mess.file);
-							FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+							System.out.println("GOing to sleep");
 							backOff(DFSMain.currentNode.getDelay_fail());
+							System.out.println("Upfrom  sleep");
+							synchronized(FileSystem.map_filestatus){
+								FileSystem.map_filestatus.remove(mess.file);
+								}
+							FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+						
 							return;
 						}
 					} catch (InterruptedException e) {
 						FileSystem.releaseWriteLock(mess.file);
-						FileSystem.map_filestatus.remove(mess.file);
-						FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+						System.out.println("GOing to sleep");
 						backOff(DFSMain.currentNode.getDelay_fail());
+						System.out.println("Upfrom  sleep");
+						synchronized(FileSystem.map_filestatus){
+							FileSystem.map_filestatus.remove(mess.file);
+							}
+						FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+					
 						e.printStackTrace();
 						return;
 					}
 				}
 			}else{
-				FileSystem.map_filestatus.remove(mess.file);
-				FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+				System.out.println("GOing to sleep");
 				backOff(DFSMain.currentNode.getDelay_fail());
+				System.out.println("Upfrom  sleep");
+				synchronized(FileSystem.map_filestatus){
+					FileSystem.map_filestatus.remove(mess.file);
+					}
+				FileFeatures.appendText(logFileM, " WRITE Operation Failed"+mess.line_index+mess.file);
+				
 				return;
 			}
 			
