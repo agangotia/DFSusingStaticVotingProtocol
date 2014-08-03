@@ -53,7 +53,7 @@ public class DFSFile {
 	 */
 	public synchronized void backup_original(){
 		try {
-			FileFeatures.copyFile(path,"data"+Constants.FILESEPARATOR+fname+"_bk");
+			FileFeatures.copyFile("fs"+Constants.FILESEPARATOR+DFSMain.currentNode.getNodeID()+Constants.FILESEPARATOR+fname,"fs"+Constants.FILESEPARATOR+DFSMain.currentNode.getNodeID()+Constants.FILESEPARATOR+fname+"_bk");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -61,7 +61,7 @@ public class DFSFile {
 	
 	public synchronized void restorePreviousVersion(){
 		try {
-			FileFeatures.copyFile("data"+Constants.FILESEPARATOR+fname+"_bk",path);
+			FileFeatures.copyFile("fs"+Constants.FILESEPARATOR+DFSMain.currentNode.getNodeID()+Constants.FILESEPARATOR+fname+"_bk","fs"+Constants.FILESEPARATOR+DFSMain.currentNode.getNodeID()+Constants.FILESEPARATOR+fname);
 			//Need to get the data  from file.
 			@SuppressWarnings("resource")
 			String content = new Scanner(new File("path")).useDelimiter("\\Z").next();
