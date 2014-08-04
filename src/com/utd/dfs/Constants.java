@@ -6,6 +6,7 @@ public interface Constants {
 	
 	String TOPOLOGYFILE="data"+FILESEPARATOR+"topology.txt";
 	String FILECONFIG="data"+FILESEPARATOR+"initialFileconfig.txt";
+	String FAILUREFILE="data"+FILESEPARATOR+"failure.txt";
 	
 	boolean TESTSENDERRECEIVER=false;
 	int SIZESENDQ=100;
@@ -25,6 +26,6 @@ public interface Constants {
 	String LOGFILEMAIN="log"+FILESEPARATOR+"logMAIN";
 	String logFileRWThread="log"+FILESEPARATOR+"logThreads";
 	
-	boolean DISABLEMONITORTHREAD=true;
+	boolean DISABLEMONITORTHREAD=false;
 	
 }

@@ -56,6 +56,9 @@ public class ProcessFileQueues {
 				break;
 			}
 		}
+		System.out.println("-----------------------------------------------");
+		System.out.println("--------sending exit ------------------------");
+		DFSCommunicator.broadcastTerminate();
 	}
 
 }

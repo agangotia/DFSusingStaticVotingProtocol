@@ -74,6 +74,10 @@ public class DFSMain {
 	public static  int readQuorumSize;
 	public static  int writeQuorumSize;
 	public static String logFileMain;
+	public static int[] exitReplies;
+	public static long failureStartTime;
+	public static long failureDuration;
+	public static long appStarted;
 	/**
 	 * This is the main.
 	 * Starting point of execution for our app.
@@ -86,6 +90,7 @@ public class DFSMain {
 	 * @author Rashmi Profile:: github::
 	 */
 	public static void main(String[] args) {
+		appStarted=System.currentTimeMillis();
 		if (args.length != 1) {
 
 			System.out
@@ -100,6 +105,7 @@ public class DFSMain {
 			.println("Exit");
 			return;
 		}
+		exitReplies=new int[totalNodes];
 		logFileMain=Constants.LOGFILEMAIN+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 		writeQuorumSize=(currentNode.getTotal_votes()/2)+1;
 		readQuorumSize=currentNode.getTotal_votes()-writeQuorumSize;
@@ -112,6 +118,12 @@ public class DFSMain {
 			.println("Exit");
 			return;
 		}
+		
+		readFailure(Constants.FAILUREFILE,DFSMain.currentNode.getNodeID());
+		FileFeatures.appendText(logFileMain, "FAILURE START:"+failureStartTime);
+		FileFeatures.appendText(logFileMain, "FAILURE DURATION:"+failureDuration);
+		FileFeatures.appendText(logFileMain, "APP STARTED:"+DFSMain.appStarted);
+		
 		//Start the Threads objects
 		Thread recvThread;//T2 RECEIVE THREAD
 		Thread sendThread;//T1 SEND THREAD
@@ -250,4 +262,49 @@ public class DFSMain {
 		DFSMain.applicationRunning=false;
 	}
 
+	
+	
+	public static boolean readFailure(String fileName,int nodeID){
+		System.out.println("Reading Failure for"+nodeID);
+		BufferedReader bReader = null;
+
+		try {
+			bReader = new BufferedReader(new FileReader(fileName));
+			String line = bReader.readLine();
+			boolean firstLine=true;
+			while(line!=null){
+				if(firstLine){
+					firstLine=false;
+				}else{
+					StringTokenizer st = new StringTokenizer(line, ",");
+					//1.NODE ID
+					int nodeIDLoop=Integer.parseInt((String) st.nextElement());
+					
+					if(nodeIDLoop==nodeID){
+						failureStartTime=Long.parseLong((String) st.nextElement(),10);
+						failureDuration=Long.parseLong((String) st.nextElement(),10);
+					}
+					
+				}
+				line = bReader.readLine();
+				if(line!=null && line.length()==0)
+					break;
+			}
+			return true;
+		}catch (IOException e) {
+			e.printStackTrace();
+			System.out.println("*********************************************************");
+			System.out.println("Exception in reading config"+e.toString());
+			return false;
+		} finally {
+			try {
+				if (bReader != null)
+					bReader.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+
+		}
+		
+	}
 }

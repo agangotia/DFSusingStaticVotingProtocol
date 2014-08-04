@@ -173,4 +173,26 @@ public class DFSCommunicator {
 		}
 		return false;
 	}
+	
+	
+	/**
+	 * Function : Broadcast Terminate signal
+	 */
+	public static void broadcastTerminate(){
+
+	DFSMain.exitReplies[DFSMain.currentNode.getNodeID()-1]=1;
+		
+		for (Integer key : DFSMain.mapNodes.keySet()) {
+			if(key!=DFSMain.currentNode.getNodeID()){
+				Message m=new Message("0",DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
+						99, "Kill ALl");
+				DFSMain.sendQueue.add(m);
+			}
+		    
+		}
+		
+		
+	}
+	
+	
 }

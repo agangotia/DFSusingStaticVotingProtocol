@@ -21,6 +21,8 @@ import java.io.Serializable;
  *  
  *  Type 30 :Test Message
  *  
+ *  Type 99 : Terminate Signal
+ *  
  * @author Anupam Gangotia
  * Profile::http://en.gravatar.com/gangotia
  * github::https://github.com/agangotia

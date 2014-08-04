@@ -50,12 +50,30 @@ public class Receiver implements Runnable {
         	  
                         System.out.println(msgPrint);
                         
-                        if(Constants.TESTSENDERRECEIVER==true && receivedMsg.getMsgType()==30)//for check
-                        	DFSMain.applicationRunning=false;
-
-                    byteBuffer.clear();
+                        byteBuffer.clear();
+                        
+                        if(System.currentTimeMillis()-DFSMain.appStarted>=DFSMain.failureStartTime && System.currentTimeMillis()-DFSMain.appStarted<=DFSMain.failureStartTime+DFSMain.failureDuration){
+                        	System.out.println("In failure");
+                        	//FileFeatures.appendText(logFile, "In failure");
+                        	continue;
+                        }
+                        
+                    
                     FileFeatures.appendText(logFile, "Receiver Thread Message Received"+receivedMsg.printMessage());
-                    if(receivedMsg.getMsgType()==0 ||receivedMsg.getMsgType()==10){
+                    
+                    if(Constants.TESTSENDERRECEIVER==true && receivedMsg.getMsgType()==30)//for check
+                    	DFSMain.applicationRunning=false;
+                    
+                    if(receivedMsg.getMsgType()==99){
+
+                		System.out.println("-----------------------------------------------");
+                		System.out.println("--------exit received------------------------");
+                    	DFSMain.exitReplies[receivedMsg.getSenderNodeID()-1]=1;
+                    	if (checkExit())
+                    		DFSMain.applicationRunning=false;
+                    	System.out.println("--------------------CHECK EXIT RETURNED FALSE---------------------------");
+                    	
+                    }else if(receivedMsg.getMsgType()==0 ||receivedMsg.getMsgType()==10){
                     //case 1: When Message Type is 0 & 10
                     //i.e Read or Write Quorum Request
                     ReadWriteQuorumRequest(receivedMsg);
@@ -182,5 +200,13 @@ public class Receiver implements Runnable {
 					data.append("Key :"+key+"=>"+"Value :"+DFSCommunicator.mapFileStatus.get(key).getClass().getName());
 				}
 				return data.toString();
+			}
+			
+			public boolean checkExit(){
+				for(int i:DFSMain.exitReplies){
+					if(i==0)
+						return false;
+				}
+				return true;
 			}
 }
