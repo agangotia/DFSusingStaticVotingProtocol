@@ -136,16 +136,17 @@ public class Receiver implements Runnable {
 	}
 	
 	public void sendLatestFromLocal(Message receivedMsg){
-		String data=FileSystem.getCachedData(receivedMsg.getFileName());
+		//String data=FileSystem.getCachedData(receivedMsg.getFileName());
+		String data=FileSystem.getFileObject(receivedMsg.getFileName()).getData();
 		int version=FileSystem.getVersionForFile(receivedMsg.getFileName());
+		FileFeatures.appendText(logFile, "Sending File Version :"+ version);
+		FileFeatures.appendText(logFile, "Sending File Data :"+ data);
 		Message localCopy=receivedMsg.sendLatestLocalCopy(data,version);
 		DFSMain.sendQueue.add(localCopy);
 	}
 
 	public void writeLatestIntoLocal(Message receivedMsg){
-		FileSystem.bup(receivedMsg.getFileName());
-		FileSystem.write(receivedMsg.getFileName(), receivedMsg.getData());
-		FileSystem.setVersionForFile(receivedMsg.getFileName(), receivedMsg.getFileVersion());
+		FileSystem.write(receivedMsg.getFileName(), receivedMsg.getData(),receivedMsg.getFileVersion());
 	}
 	
 	public void writeReleaseLock(Message receivedMsg){

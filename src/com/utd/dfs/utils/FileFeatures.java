@@ -27,7 +27,7 @@ public class FileFeatures {
 		}
 	}
 	public static synchronized void writeText(String fileName,String message){
-		System.out.println("====HULLAAA :: "+message);
+		//System.out.println("====HULLAAA :: "+message);
 		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, false)))) {
 		    out.println(message);
 		}catch (IOException e) {

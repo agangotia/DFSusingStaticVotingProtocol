@@ -90,20 +90,34 @@ public class FileSystem {
 		return true;
 		}
 	}
-	public static synchronized void lock(String file_name, String lock_type){
+	public static synchronized boolean lock(String file_name, String lock_type){
 		DFSFile file_obj=null;
-		file_obj= fsobject.get(file_name);
-		synchronized(file_obj){
-		if(lock_type.equals("R")){
-			if(file_obj.readLockCount==0)
-				file_obj.rwl.readLock().lock();
-			file_obj.readLockCount++;
+		try{
+			file_obj= fsobject.get(file_name);
+			System.out.println("1...");
+			if(lock_type.equals("R")){
+				//if(file_obj.readLockCount==0)
+					//file_obj.rwl.readLock().lock();
+				file_obj.readLockCount++;
+				return true;
+			}
+			else{
+				System.out.println("2...");
+				file_obj.cacheddata=file_obj.getData();
+				if(!file_obj.rwl.writeLock().tryLock()){
+					System.out.println("Lock Status"+FileSystem.getStatus(file_name));
+					return false;
+				}
+				System.out.println("2...");
+				return true;
+			}
+			
+			
+		}catch(Exception ex){
+			ex.printStackTrace();
+			return false;
 		}
-		else{
-			file_obj.cacheddata=file_obj.getData();
-			file_obj.rwl.writeLock().lock();
-		}
-		}
+		
 	}
 	
 	public static String getCachedData(String filename){
@@ -111,8 +125,13 @@ public class FileSystem {
 		return file_obj.cacheddata;
 	}
 	public static void checkout(Status foc,String mapKeyIdentifier){
-		System.out.println("Hulla ++"+foc.getMaxVersionNodeId());
+		
+		
 		if(DFSMain.currentNode.getNodeID()!=foc.getMaxVersionNodeId()){
+			
+			System.out.println("OOPS I don't have the Latest.. Will ask from network");
+			System.out.println(foc.getMaxVersionNodeId() +" Has the latest, with version ");
+			
 			//get the latest version from node.. call function in consistency manager class
 			int version=foc.getMaxVersionNodeId();
 			
@@ -131,15 +150,21 @@ public class FileSystem {
 					o.wait();
 					
 					String data=objStatus.getContentOfFile(foc.getMaxVersionNodeId());
+					/*bup(foc.getFileName());
 					fsobject.get(foc.getFileName()).setFile_version(version);
-					fsobject.get(foc.getFileName()).setData(data);
+					fsobject.get(foc.getFileName()).setData(data);*/
+					System.out.println("Check out gives Version "+objStatus.getVersionOfFile(foc.getMaxVersionNodeId()));
+					System.out.println("Check out gives Date "+data);
+					write(foc.getFileName(),data,objStatus.getVersionOfFile(foc.getMaxVersionNodeId()));
 					DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 					
 					}catch(InterruptedException ex){
 						ex.printStackTrace();
-						
+						DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 					}
 			}
+		}else{
+			System.out.println("CheckOut I have the Latest .. Hurray.");
 		}
 	
 	}
@@ -154,9 +179,9 @@ public class FileSystem {
 		 file_obj.append( data);
 	}
 	
-	public static void write(String file_name,String data){
+	public static void write(String file_name,String data,int version){
 		DFSFile file_obj= fsobject.get(file_name);
-		 file_obj.write( data);
+		 file_obj.write(data,version);
 	}
 	public static  void checkin(){
 	 
@@ -169,7 +194,6 @@ public class FileSystem {
 	
 	public static void restorePreviousVersion(String file_name){
 		DFSFile file_obj= fsobject.get(file_name);
-		file_obj.setFile_version(file_obj.file_version_old);
 		file_obj.restorePreviousVersion();
 	}
 	
@@ -213,5 +237,15 @@ public class FileSystem {
 	
 	public static DFSFile getFileObject(String File){
 		return fsobject.get(File);
+	}
+	
+	public static void printLockStatus(){
+		System.out.println("Printing Lock Status");
+		for (String s:fsobject.keySet()){
+			System.out.println("FileName"+s);
+			System.out.println("Read Lock Status"+fsobject.get(s).readLockCount);
+			System.out.println("Write Lock Status"+fsobject.get(s).rwl.isWriteLocked());
+		}
+		
 	}
 }

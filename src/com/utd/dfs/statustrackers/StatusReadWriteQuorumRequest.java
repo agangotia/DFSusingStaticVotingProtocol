@@ -90,4 +90,10 @@ public class StatusReadWriteQuorumRequest extends Status {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	@Override
+	public int getVersionOfFile(int NodeID) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 }

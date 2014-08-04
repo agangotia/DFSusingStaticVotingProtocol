@@ -54,6 +54,7 @@ public class DFSFile {
 	public synchronized void backup_original(){
 		try {
 			FileFeatures.copyFile(path,path+"_bk");
+			this.file_version_old=this.file_version;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -80,14 +81,17 @@ public class DFSFile {
 	public synchronized void append(String data){
 	//	rwl.writeLock().lock();
 		FileFeatures.appendText(path, data);
+		this.file_version++;
 		this.data+="\n"+data;
 		
 	}
 	
-	public synchronized void write(String data2){
+	public synchronized void write(String data2,int version){
 		//	rwl.writeLock().lock();
+			backup_original();
 			FileFeatures.writeText(path, data2);
-			this.data=data;
+			this.data=data2;
+			this.file_version=version;
 			
 		}
 	
@@ -98,17 +102,18 @@ public class DFSFile {
 		return this.data;
 	}
 	public  synchronized void releaseWrite(){
-		if(rwl.writeLock().isHeldByCurrentThread())
+		rwl.writeLock().unlock();
+		/*if(rwl.writeLock().isHeldByCurrentThread())
 			rwl.writeLock().unlock();
 		else{
 			System.out.println("**********Error************");
 			System.out.println("**********Write Lock is not yet acquired************");
-		}
+		}*/
 	}
 	public synchronized void relaseRead(){
 		readLockCount--;
-		if(readLockCount==0)
-			rwl.readLock().unlock();
+		//if(readLockCount==0)
+			//rwl.readLock().unlock();
 	}
 	
 	public int getFile_version() {

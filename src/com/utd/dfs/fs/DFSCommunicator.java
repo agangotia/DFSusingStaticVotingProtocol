@@ -58,13 +58,14 @@ public class DFSCommunicator {
 	 * Function : Broadcast All nodes, asking for votes for a write operation.
 	 */
 	public static void broadcastWriteRequestForVotes(String fileName,Status o,String mapKeyIdentifier){
+		System.out.println("1...");
 		if(mapKeyIdentifier!=null)
 			mapFileStatus.put(mapKeyIdentifier, o);
 		else{
 			System.out.println("************error*********");
 			System.out.println("************map key is null*********");
 		}
-		
+		System.out.println("1...");
 		for (Integer key : DFSMain.mapNodes.keySet()) {
 			if(key!=DFSMain.currentNode.getNodeID()){
 				Message m=new Message("0", DFSMain.currentNode.getNodeID(), DFSMain.mapNodes.get(key).getNodeID(),
@@ -73,6 +74,7 @@ public class DFSCommunicator {
 			}
 		    
 		}
+		System.out.println("1...");
 	}
 	
 	/**
@@ -118,6 +120,16 @@ public class DFSCommunicator {
 		}
 	}
 	
+	
+	/**
+	 * Function : Multicast All nodes, asking for write Lock Release.
+	 */
+	public static void UnicastRequestForWriteLockRelease(String fileName,int NodeId,String opcode,String mapKeyIdentifier){
+		Message m=new Message("0", DFSMain.currentNode.getNodeID(), NodeId,
+				15, "Release", fileName,mapKeyIdentifier);
+		DFSMain.sendQueue.add(m);
+	}
+	
 	/**
 	 * Function : Multicast All nodes, with data and version to uodate their copy
 	 */
@@ -142,7 +154,7 @@ public class DFSCommunicator {
 		synchronized (o2) {
 			try {
 				o2.wait();
-				mapFileStatus.remove(fileName);
+				mapFileStatus.remove(mapKeyIdentifier);
 				// all nodes were able to update the changes
 				if(objStatus2.returnDecision()){
 					MulticastRequestForWriteLockRelease(fileName,Nodes,"Release",mapKeyIdentifier);

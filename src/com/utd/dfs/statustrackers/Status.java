@@ -70,12 +70,12 @@ public  abstract class Status {
 
 	public void addReply(Message m){
 		repliesBucket.put(m.getSenderNodeID(),m);
-		System.out.println("Replies received From"+m.getSenderNodeID());
+		System.out.println("Replies received From"+m.getSenderNodeID()+"Date received is "+m.getData());
 		System.out.println("Replies received "+repliesBucket.size());
 		System.out.println("Replies expecting "+expectedReplies);
 		synchronized(o){
-			if(repliesBucket.size()==expectedReplies || this.returnDecision()==true){
-			//if(repliesBucket.size()==expectedReplies ){
+			//if(repliesBucket.size()==expectedReplies || this.returnDecision()==true){
+			if(repliesBucket.size()==expectedReplies ){
 				System.out.println("Notified RW Thread.This will remove the status object from map");
 				o.notify();
 			}
@@ -87,4 +87,5 @@ public  abstract class Status {
 	public abstract int getMaxVersionNodeId();
 	public abstract ArrayList<Integer> nodeIdsRepliedyes();
 	public abstract String getContentOfFile(int NodeID);
+	public abstract int getVersionOfFile(int NodeID);
 }
