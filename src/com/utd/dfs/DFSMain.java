@@ -108,6 +108,8 @@ public class DFSMain {
 		exitReplies=new int[totalNodes];
 		logFileMain=Constants.LOGFILEMAIN+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 		writeQuorumSize=(currentNode.getTotal_votes()/2)+1;
+		//writeQuorumSize=4;
+		//readQuorumSize=4;
 		readQuorumSize=currentNode.getTotal_votes()-writeQuorumSize;
 		FileFeatures.appendText(logFileMain, "Write Quorum Size:"+writeQuorumSize);
 		FileFeatures.appendText(logFileMain, "Read Quorum Size:"+readQuorumSize);

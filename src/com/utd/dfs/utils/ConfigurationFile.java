@@ -29,7 +29,7 @@ public class ConfigurationFile {
 		int remaining_ops = operations_count;
 		int line_index = 1;
 		int read_ops = (int) Math.floor(0.7 * operations_count);
-		int write_ops = (int) Math.ceil(0.3 * operations_count);
+		int write_ops = (int) Math.ceil(0.3* operations_count);
 		char[] chars = "abcdefghijklmnopqrstuvwxyz".toCharArray();
 		StringBuilder sb = new StringBuilder();
 		Random random_string = new Random();// generate random strings for write

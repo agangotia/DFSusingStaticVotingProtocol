@@ -174,7 +174,8 @@ public class ReadWrite extends Thread{
 						if(objStatus.returnDecision()){//once has the majority
 							//TESTING
 							long opStartTime=System.currentTimeMillis();
-							
+							//use this for testing true
+							//Thread.sleep(1000l);
 							System.out.println("***GOt the Majority");
 							FileSystem.bup(mess.file);
 							
