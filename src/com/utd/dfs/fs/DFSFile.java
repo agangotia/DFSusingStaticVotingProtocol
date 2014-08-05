@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class DFSFile {
 
 
+	
 	private String fname;
 	private String path;
 	
@@ -19,6 +20,8 @@ public class DFSFile {
 	
 	private String data;
 	public String cacheddata;
+	
+	public long lockedTime;
 	public String getData() {
 		return data;
 	}

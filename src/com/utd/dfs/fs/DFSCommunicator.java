@@ -157,6 +157,7 @@ public class DFSCommunicator {
 				mapFileStatus.remove(mapKeyIdentifier);
 				// all nodes were able to update the changes
 				if(objStatus2.returnDecision()){
+					
 					MulticastRequestForWriteLockRelease(fileName,Nodes,"Release",mapKeyIdentifier);
 					return true;
 				}else{

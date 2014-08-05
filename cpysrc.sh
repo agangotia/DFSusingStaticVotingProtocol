@@ -14,11 +14,14 @@ rm -R src/*
 rm -r build.xml
 #Clear the log
 rm -R log/*
+#clear the test
+rm -R test/*
 #Clear the filesystem
 rm -r fs/1/*
 rm -r fs/2/*
+rm -r fs/3/*
 #Clear the config_file
-rm -r config_file
+#rm -r config_file
 cp -r $DIRSRC"/src" $DIRDST
 cp -r $DIRSRC"/build.xml" $DIRDST
 

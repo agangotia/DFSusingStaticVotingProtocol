@@ -10,6 +10,9 @@ rm -R log/*
 #Clear the filesystem
 rm -r fs/1/*
 rm -r fs/2/*
+rm -r fs/3/*
+#clear the test
+rm -R test/*
 #Clear the config_file
 #rm -r config_file
 

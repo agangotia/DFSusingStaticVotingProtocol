@@ -83,12 +83,41 @@ public class FileSystem {
 	
 	
 	public static boolean getStatus(String fname){
+		
+		
 		if(map_filestatus.get(fname).equals("pending")){
+			releaseTimeOutLock(fname);
+	
 			return false;
 		}
 		else{
 		return true;
 		}
+	}
+	
+	public static void releaseTimeOutLock(String fName){
+		long time=System.currentTimeMillis();
+		DFSFile fObj=fsobject.get(fName);
+		if(time-fObj.lockedTime>5000l){
+			if(fObj.readLockCount>0)
+				fObj.relaseRead();
+			/*if(fObj.rwl.isWriteLocked())
+				fObj.releaseWrite();*/
+			
+		}
+	}
+	
+	public static void releaseAllLocks(){
+		synchronized(FileSystem.map_filestatus){
+		map_filestatus.clear();
+		}
+		for(String s:fsobject.keySet()){
+			DFSFile fObj=fsobject.get(s);
+			fObj.readLockCount=0;
+			fObj.releaseWrite();
+		}
+		System.out.println("RELEASING ALL LOCKS");
+		
 	}
 	public static synchronized boolean lock(String file_name, String lock_type){
 		DFSFile file_obj=null;
@@ -99,6 +128,7 @@ public class FileSystem {
 				//if(file_obj.readLockCount==0)
 					//file_obj.rwl.readLock().lock();
 				file_obj.readLockCount++;
+				file_obj.lockedTime=System.currentTimeMillis();
 				return true;
 			}
 			else{
@@ -106,8 +136,10 @@ public class FileSystem {
 				file_obj.cacheddata=file_obj.getData();
 				if(!file_obj.rwl.writeLock().tryLock()){
 					System.out.println("Lock Status"+FileSystem.getStatus(file_name));
+					//releaseTimeOutLock(file_name);
 					return false;
 				}
+				file_obj.lockedTime=System.currentTimeMillis();
 				System.out.println("2...");
 				return true;
 			}
@@ -212,6 +244,7 @@ public class FileSystem {
 	
 	
 	public static boolean getWriteLockStatus(String fileName){
+		releaseTimeOutLock(fileName);
 		DFSFile file_obj= fsobject.get(fileName);
 		return file_obj.rwl.isWriteLocked();
 	}

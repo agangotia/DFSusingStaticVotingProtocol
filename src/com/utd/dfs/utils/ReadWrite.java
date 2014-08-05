@@ -15,6 +15,7 @@ public class ReadWrite extends Thread{
 	String logFile;
 	String logFileM;
 	String logFileRWThread;
+	String testFile;
 	public ReadWrite(FileMessage mess) {
 		super();
 		this.mess = mess;
@@ -22,6 +23,7 @@ public class ReadWrite extends Thread{
 		logFileM=Constants.LOGFILEMAIN+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 		logFileRWThread=Constants.logFileRWThread+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 		FileFeatures.appendText(logFileRWThread, "THread Started"+this.getName());
+		testFile=Constants.LOGTEST+DFSMain.currentNode.getNodeID()+Constants.LOGTESTEND;
 	}
 	
 	public void run(){
@@ -63,6 +65,9 @@ public class ReadWrite extends Thread{
 						FileFeatures.appendText(logFile, "Return Decision returns"+objStatus.returnDecision());
 						if(objStatus.returnDecision()){//once has the majority
 							
+							//TESTING
+							long opStartTime=System.currentTimeMillis();
+							
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MAJORITY FOR READ");
 							
 								FileSystem.checkout(objStatus,mapKeyIdentifierCheckOut);
@@ -71,10 +76,15 @@ public class ReadWrite extends Thread{
 							//Do the Broadcast for Read Lock Release to quorum
 							//Type 5 read broadcast lock release
 							FileFeatures.appendText(logFile, "RW Thread For O:"+mess.operation+",F: "+mess.file+"MULTICAST LOCK RELEASE");
+							//TESTING
+							long opEndTime=System.currentTimeMillis();
 							DFSCommunicator.MulticastRequestForReadLockRelease(mess.file,NodesYes,mapKeyIdentifierReadLockRelease);
 							
 							String data=FileSystem.read(mess.file);
 							System.out.println("File Read"+data);
+							
+							FileFeatures.appendText(testFile, opStartTime+"::"+opEndTime+";;"+mess.operation.charAt(0));
+							
 							FileSystem.releaseReadLock(mess.file);
 							FileSystem.map_filestatus.put(mess.file, "complete");
 							FileFeatures.appendText(logFileM, "Read Operation COMPLETE"+mess.line_index+mess.file);
@@ -162,6 +172,9 @@ public class ReadWrite extends Thread{
 						ArrayList<Integer> NodesYes=objStatus.nodeIdsRepliedyes();
 						DFSCommunicator.mapFileStatus.remove(mapKeyIdentifier);
 						if(objStatus.returnDecision()){//once has the majority
+							//TESTING
+							long opStartTime=System.currentTimeMillis();
+							
 							System.out.println("***GOt the Majority");
 							FileSystem.bup(mess.file);
 							
@@ -175,10 +188,15 @@ public class ReadWrite extends Thread{
 							//Synchronized on map object inside consistency manager and wait
 							//till u notify
 							
-							
+							//TESTING
+							long opEndTime=System.currentTimeMillis();
 							boolean result=DFSCommunicator.MulticastRequestForWriteUpdate(mess.file, NodesYes, FileSystem.read(mess.file), FileSystem.fsobject.get(mess.file).getFile_version(),mapKeyIdentifierWRITEUPDATE);
 							
 							if(result){// all nodes were able to update the changes
+								
+								
+								FileFeatures.appendText(testFile, opStartTime+"::"+opEndTime+";;"+mess.operation.charAt(0));
+								
 								//Again a Broadcast to release the locks.
 								FileSystem.releaseWriteLock(mess.file);
 								//FileSystem.setVersionForFile(mess.file, FileSystem.getVersionForFile(mess.file));

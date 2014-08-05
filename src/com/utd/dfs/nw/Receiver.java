@@ -20,6 +20,7 @@ import com.utd.dfs.utils.FileFeatures;
 public class Receiver implements Runnable {
 	String logFile;
 	
+	
 	public Receiver(){
 		logFile=Constants.LOGFILERCVR+DFSMain.currentNode.getNodeID()+Constants.LOGFILEEND;
 	}
@@ -57,7 +58,13 @@ public class Receiver implements Runnable {
                         	//FileFeatures.appendText(logFile, "In failure");
                         	continue;
                         }
-                        
+                      
+                        if(DFSMain.sendQueue.isEmpty()){
+                        	if (checkExit()){
+                        		DFSMain.applicationRunning=false;
+                        		return;
+                        	}
+                    	}
                     
                     FileFeatures.appendText(logFile, "Receiver Thread Message Received"+receivedMsg.printMessage());
                     
@@ -69,8 +76,8 @@ public class Receiver implements Runnable {
                 		System.out.println("-----------------------------------------------");
                 		System.out.println("--------exit received------------------------");
                     	DFSMain.exitReplies[receivedMsg.getSenderNodeID()-1]=1;
-                    	if (checkExit())
-                    		DFSMain.applicationRunning=false;
+                    	
+                			
                     	System.out.println("--------------------CHECK EXIT RETURNED FALSE---------------------------");
                     	
                     }else if(receivedMsg.getMsgType()==0 ||receivedMsg.getMsgType()==10){

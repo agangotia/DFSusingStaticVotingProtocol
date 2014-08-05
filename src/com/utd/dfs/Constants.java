@@ -26,6 +26,10 @@ public interface Constants {
 	String LOGFILEMAIN="log"+FILESEPARATOR+"logMAIN";
 	String logFileRWThread="log"+FILESEPARATOR+"logThreads";
 	
+	//For Testing
+	String LOGTEST="test"+FILESEPARATOR+"logRWNode";
+	String LOGTESTEND=".log";
+	
 	boolean DISABLEMONITORTHREAD=false;
 	
 }
